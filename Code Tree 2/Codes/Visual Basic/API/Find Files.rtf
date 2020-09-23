@@ -1,0 +1,89 @@
+{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\fswiss Verdana;}{\f3\fswiss Tahoma;}{\f4\fswiss Courier New;}{\f5\fswiss Tahoma;}}
+{\colortbl\red0\green0\blue0;\red128\green0\blue128;\red0\green128\blue0;\red0\green0\blue128;}
+\deflang2057\pard\plain\f2\fs20\b\ul Find Files
+\par \plain\f2\fs20 
+\par This module will find all the files/folders in a given directory, including the sub directories. You need to write a sub procedure to handle any files found, and then pass it's name to the function like so:
+\par 
+\par \pard\li300\plain\f4\fs20\cf3 Call\plain\f4\fs20\cf0  FindFiles("\plain\f4\fs20\cf1 C:\plain\f4\fs20\cf0 ", Me, AddFile)
+\par 
+\par \plain\f4\fs20\cf3 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Sub\plain\f4\fs20\cf0  AddFile(\plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  FileTitle \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0 , \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  FileName \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0 )
+\par     \plain\f4\fs20\cf2 'Do whatever here
+\par \plain\f4\fs20\cf3 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Sub\plain\f5\fs17 
+\par 
+\par \pard\plain\f2\fs20 
+\par And here is the module:
+\par 
+\par \pard\li300\plain\f4\fs20\cf3 Option\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Explicit\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Declare\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Function\plain\f4\fs20\cf0  FindFirstFile Lib "\plain\f4\fs20\cf1 kernel32\plain\f4\fs20\cf0 " \plain\f4\fs20\cf3 Alias\plain\f4\fs20\cf0  "\plain\f4\fs20\cf1 FindFirstFileA\plain\f4\fs20\cf0 " (\plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  lpFileName \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0 , lpFindFileData \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  WIN32_FIND_DATA) \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Declare\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Function\plain\f4\fs20\cf0  FindNextFile Lib "\plain\f4\fs20\cf1 kernel32\plain\f4\fs20\cf0 " \plain\f4\fs20\cf3 Alias\plain\f4\fs20\cf0  "\plain\f4\fs20\cf1 FindNextFileA\plain\f4\fs20\cf0 " (\plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  hFindFile \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 , lpFindFileData \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  WIN32_FIND_DATA) \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Declare\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Function\plain\f4\fs20\cf0  FindClose Lib "\plain\f4\fs20\cf1 kernel32\plain\f4\fs20\cf0 " (\plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  hFindFile \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 ) \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Const\plain\f4\fs20\cf0  MAX_PATH = 260
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Type\plain\f4\fs20\cf0  FILETIME
+\par         dwLowDateTime \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par         dwHighDateTime \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf3 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Type\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Type\plain\f4\fs20\cf0  WIN32_FIND_DATA
+\par         dwFileAttributes \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par         ftCreationTime \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  FILETIME
+\par         ftLastAccessTime \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  FILETIME
+\par         ftLastWriteTime \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  FILETIME
+\par         nFileSizeHigh \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par         nFileSizeLow \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par         dwReserved0 \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par         dwReserved1 \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par         cFileName \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0  * MAX_PATH
+\par         cAlternate \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0  * 14
+\par \plain\f4\fs20\cf3 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Type\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf2 'Private Const strLongFileName = ""\\\\?\\" 'Allows use of filenames longer than MAX_PATH
+\par \plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf3 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Function\plain\f4\fs20\cf0  \plain\f4\fs20\cf2 RemoveNullChars(ByVal Text As String) As String
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf3 On\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Local\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Error\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Resume\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Next\plain\f4\fs20\cf0 
+\par     \plain\f4\fs20\cf2 'Default return is the same text
+\par \plain\f4\fs20\cf0     RemoveNullChars = Text\plain\f4\fs20\cf2 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2 'Find the null char
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf3 Dim\plain\f4\fs20\cf0  lngFound \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par     lngFound = InStr(1, RemoveNullChars, vbNullChar, vbTextCompare)
+\par     \plain\f4\fs20\cf2 'If there is one, return what's to the left of it
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf3 If\plain\f4\fs20\cf0  lngFound > 0 \plain\f4\fs20\cf3 Then\plain\f4\fs20\cf0  RemoveNullChars = Left$(RemoveNullChars, lngFound - 1)\plain\f4\fs20\cf2 
+\par \plain\f4\fs20\cf3 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Function\plain\f4\fs20\cf0 
+\par 
+\par \plain\f4\fs20\cf3 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Sub\plain\f4\fs20\cf0  FindFiles(\plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  Path \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0 , _
+\par     \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  CallerObject \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Object\plain\f4\fs20\cf0 , _
+\par     \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  AddFileSub \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0 , _
+\par     \plain\f4\fs20\cf3 Optional\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  Pattern \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0  = "\plain\f4\fs20\cf1 *.*\plain\f4\fs20\cf0 ", _
+\par     \plain\f4\fs20\cf3 Optional\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  SubDirs \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Boolean\plain\f4\fs20\cf0  = True)
+\par     \plain\f4\fs20\cf3 On\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Local\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Error\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Resume\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Next\plain\f4\fs20\cf0 
+\par     \plain\f4\fs20\cf2 'If no \\ at end of path add it
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf3 If\plain\f4\fs20\cf0  Right(Path, 1) <> "\plain\f4\fs20\cf1 \\\plain\f4\fs20\cf0 " \plain\f4\fs20\cf3 Then\plain\f4\fs20\cf0  Path = Path & "\plain\f4\fs20\cf1 \\\plain\f4\fs20\cf0 "
+\par     
+\par     \plain\f4\fs20\cf2 'Find the first file
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf3 Dim\plain\f4\fs20\cf0  wfdInfo \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  WIN32_FIND_DATA
+\par     \plain\f4\fs20\cf3 Dim\plain\f4\fs20\cf0  lngReturn \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 , lngContinue \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par     lngContinue = 1
+\par     lngReturn = FindFirstFile(Path & "\plain\f4\fs20\cf1 *.*\plain\f4\fs20\cf0 ", wfdInfo)
+\par     
+\par     \plain\f4\fs20\cf2 'Remove the null chars
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf3 Dim\plain\f4\fs20\cf0  strFileName \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0 , strFullName \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0 
+\par     \plain\f4\fs20\cf2 'Loop while still files/folders
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf3 Do\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 While\plain\f4\fs20\cf0  lngContinue
+\par         \plain\f4\fs20\cf2 'Get rid of the null chars
+\par \plain\f4\fs20\cf0         strFileName = \plain\f4\fs20\cf2 RemoveNullChars(wfdInfo.cFileName)
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'Make the filename full (i.e. add the path)
+\par \plain\f4\fs20\cf0         strFullName = Path & strFileName
+\par         \plain\f4\fs20\cf2 'If a valid folder
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf3 If\plain\f4\fs20\cf0  strFileName <> vbNullString \plain\f4\fs20\cf3 And\plain\f4\fs20\cf0  strFileName <> "\plain\f4\fs20\cf1 .\plain\f4\fs20\cf0 " \plain\f4\fs20\cf3 And\plain\f4\fs20\cf0  _
+\par             strFileName <> "\plain\f4\fs20\cf1 ..\plain\f4\fs20\cf0 " \plain\f4\fs20\cf3 Then\plain\f4\fs20\cf0 
+\par             \plain\f4\fs20\cf2 'Call the add file sub
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf3 If\plain\f4\fs20\cf0  strFileName \plain\f4\fs20\cf3 Like\plain\f4\fs20\cf0  Pattern \plain\f4\fs20\cf3 Then\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Call\plain\f4\fs20\cf0  CallByName(CallerObject, AddFileSub, VbMethod, strFileName, strFullName)
+\par             \plain\f4\fs20\cf2 'If it's a folder, do this sub again for that dir so we get all _
+\par \plain\f4\fs20\cf0              files/folders (will keep going until all folders have been done)
+\par             \plain\f4\fs20\cf3 If\plain\f4\fs20\cf0  SubDirs \plain\f4\fs20\cf3 And\plain\f4\fs20\cf0  (GetAttr(strFullName) \plain\f4\fs20\cf3 And\plain\f4\fs20\cf0  vbDirectory) \plain\f4\fs20\cf3 Then\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Call\plain\f4\fs20\cf0  FindFiles(strFullName, CallerObject, AddFileSub, Pattern, SubDirs)
+\par         \plain\f4\fs20\cf3 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 If\plain\f4\fs20\cf0 
+\par         \plain\f4\fs20\cf2 'Find the next file and get the return value
+\par \plain\f4\fs20\cf0         lngContinue = FindNextFile(lngReturn, wfdInfo)
+\par     \plain\f4\fs20\cf3 Loop\plain\f4\fs20\cf0 
+\par     \plain\f4\fs20\cf3 Call\plain\f4\fs20\cf0  FindClose(lngReturn)
+\par \plain\f4\fs20\cf3 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Sub\plain\f4\fs20\cf0 
+\par \pard\plain\f5\fs17 
+\par }
+ 

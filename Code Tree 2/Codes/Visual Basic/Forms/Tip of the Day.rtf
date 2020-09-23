@@ -1,0 +1,131 @@
+{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\fswiss Tahoma;}{\f3\fswiss Tahoma;}{\f4\fswiss Verdana;}{\f5\fswiss Courier New;}}
+{\colortbl\red0\green0\blue0;\red0\green0\blue128;\red0\green128\blue0;\red128\green0\blue128;}
+\deflang2057\pard\plain\f4\fs20\b\ul Tip of Day\plain\f4\fs20 
+\par 
+\par This provides an alternative to the default tip of the day form, which will cycle through the tips, save the settings on exit, tell the user which tip the are on and allow them to cycle backwards and forwards through the tips by left/right clicking on the current tip label. You will need on your form:
+\par 
+\par \pard\li300{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'b7}}\plain\f4\fs20 {\pntext\f1\'b7\tab} A picture box named \plain\f4\fs20\b picContainer\plain\f4\fs20  with the tip of the day picture in it (load the default tip of the day form if you don't know which one it is)
+\par {\pntext\f1\'b7\tab} A label named \plain\f4\fs20\b lblInfo\plain\f4\fs20  inside picContainer, with the caption "\plain\f4\fs20\i Did you know...\plain\f4\fs20 ", positioned near the top of the picture box
+\par {\pntext\f1\'b7\tab} A label named \plain\f4\fs20\b lblTipText\plain\f4\fs20  filling most of the rest of the picContainer picture box
+\par {\pntext\f1\'b7\tab} A label named \plain\f4\fs20\b lblTipNumber\plain\f4\fs20  at the bottom right of picContainer, with AutoSize set to True, and right-aligned text
+\par {\pntext\f1\'b7\tab} A checkbox named \plain\f4\fs20\b chkLoadTipsAtStartup\plain\f4\fs20 , with the text "\plain\f4\fs20\i &Show Tips at Startup\plain\f4\fs20 "
+\par {\pntext\f1\'b7\tab} A command button named \plain\f4\fs20\b cmdOK\plain\f4\fs20 , with the text "\plain\f4\fs20\i &OK\plain\f4\fs20 "
+\par {\pntext\f1\'b7\tab} A command button named \plain\f4\fs20\b cmdNextTip\plain\f4\fs20  with the text "\plain\f4\fs20\i &Next Tip\plain\f4\fs20 "
+\par \pard\plain\f4\fs20 
+\par 
+\par Then place this code in the form:
+\par 
+\par \pard\li300\plain\f5\fs20\cf1 Option\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Explicit\plain\f5\fs20\cf0 
+\par \plain\f5\fs20\cf1 Private\plain\f5\fs20\cf0  intCurrentTip \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Integer\plain\f5\fs20\cf0  \plain\f5\fs20\cf2 'The current index of the tip we are on
+\par \plain\f5\fs20\cf1 Private\plain\f5\fs20\cf0  strTips() \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 String\plain\f5\fs20\cf0  \plain\f5\fs20\cf2 'All the tips in an array
+\par \plain\f5\fs20\cf0 
+\par \plain\f5\fs20\cf1 Private\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0  cmdNextTip_Click()
+\par     \plain\f5\fs20\cf1 On\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Local\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Error\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Resume\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Next\plain\f5\fs20\cf0 
+\par     \plain\f5\fs20\cf2 'Show the next tip
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 Call\plain\f5\fs20\cf0  SetTip(intCurrentTip + 1)
+\par \plain\f5\fs20\cf1 End\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0 
+\par 
+\par \plain\f5\fs20\cf1 Private\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0  cmdOK_Click()
+\par     \plain\f5\fs20\cf1 On\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Local\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Error\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Resume\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Next\plain\f5\fs20\cf0 
+\par     Unload Me
+\par \plain\f5\fs20\cf1 End\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0 
+\par 
+\par \plain\f5\fs20\cf1 Private\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0  Form_Load()
+\par     \plain\f5\fs20\cf1 On\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Local\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Error\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Resume\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Next\plain\f5\fs20\cf0 
+\par     \plain\f5\fs20\cf2 'Get the value of 'Show Tips at Startup' checkbox
+\par \plain\f5\fs20\cf0     chkLoadTipsAtStartup.Value = \plain\f5\fs20\cf1 Call\plain\f5\fs20\cf0  GetSetting(app.EXEName, "\plain\f5\fs20\cf3 General\plain\f5\fs20\cf0 ", _
+\par         "\plain\f5\fs20\cf3 Show Tips at Startup\plain\f5\fs20\cf0 ", vbChecked)
+\par     \plain\f5\fs20\cf2 'Get the last tip we were on (-1 if not found)
+\par \plain\f5\fs20\cf0     intCurrentTip = \plain\f5\fs20\cf1 Call\plain\f5\fs20\cf0  GetSetting(app.EXEName, "\plain\f5\fs20\cf3 General\plain\f5\fs20\cf0 ", _
+\par         "\plain\f5\fs20\cf3 Last Tip\plain\f5\fs20\cf0 ", -1)
+\par     \plain\f5\fs20\cf2 'Load the tips
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 Call\plain\f5\fs20\cf0  GetTips
+\par     \plain\f5\fs20\cf2 'Set the tip to the next one
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 Call\plain\f5\fs20\cf0  SetTip(intCurrentTip + 1)
+\par \plain\f5\fs20\cf1 End\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0 
+\par 
+\par \plain\f5\fs20\cf1 Private\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0  GetTips()
+\par     \plain\f5\fs20\cf1 On\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Local\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Error\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Resume\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Next\plain\f5\fs20\cf0 
+\par     \plain\f5\fs20\cf1 Const\plain\f5\fs20\cf0  strFileName \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 String\plain\f5\fs20\cf0  = "\plain\f5\fs20\cf3 Tips.txt\plain\f5\fs20\cf0 " \plain\f5\fs20\cf2 'Filename of tips
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf2 'Get the text from the tips file
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 Dim\plain\f5\fs20\cf0  strTemp \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 String\plain\f5\fs20\cf0 
+\par     strTemp = FixPath(App.Path) & strFileName
+\par     \plain\f5\fs20\cf1 If\plain\f5\fs20\cf0  DoesFileExist(strTemp) \plain\f5\fs20\cf1 Then\plain\f5\fs20\cf0  strTemp = OpenText(strTemp)
+\par     \plain\f5\fs20\cf2 'If we have something
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 If\plain\f5\fs20\cf0  strTemp <> "" \plain\f5\fs20\cf1 Then\plain\f5\fs20\cf0 
+\par         \plain\f5\fs20\cf2 'Split it by new lines
+\par \plain\f5\fs20\cf0         strTips = Split(strTemp, vbNewLine, , vbTextCompare)
+\par         
+\par     \plain\f5\fs20\cf2 'No text
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 Else\plain\f5\fs20\cf0 
+\par         \plain\f5\fs20\cf2 'Tips length = 1
+\par \plain\f5\fs20\cf0         \plain\f5\fs20\cf1 ReDim\plain\f5\fs20\cf0  strTips(0)
+\par         \plain\f5\fs20\cf2 'Default tip
+\par \plain\f5\fs20\cf0         strTips(0) = "\plain\f5\fs20\cf3 ...that the tip of the day text file (\plain\f5\fs20\cf0 " & strFileName & "\plain\f5\fs20\cf3 ) was not found in the application path.\plain\f5\fs20\cf0 " & _
+\par             "\plain\f5\fs20\cf3 Please create a file named \plain\f5\fs20\cf0 " & strFileName & "\plain\f5\fs20\cf3  with one tip per line.\plain\f5\fs20\cf0 "
+\par     \plain\f5\fs20\cf1 End\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 If\plain\f5\fs20\cf0 
+\par     \plain\f5\fs20\cf2 'Enable next tip command if there is more than one tip
+\par \plain\f5\fs20\cf0     cmdNextTip.Enabled = \plain\f5\fs20\cf1 UBound\plain\f5\fs20\cf0 (strTips) > \plain\f5\fs20\cf1 LBound\plain\f5\fs20\cf0 (strTips)
+\par \plain\f5\fs20\cf1 End\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0 
+\par 
+\par \plain\f5\fs20\cf1 Private\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0  SetTip(\plain\f5\fs20\cf1 ByVal\plain\f5\fs20\cf0  Index \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Integer\plain\f5\fs20\cf0 )
+\par     \plain\f5\fs20\cf1 On\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Local\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Error\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Resume\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Next\plain\f5\fs20\cf0 
+\par     \plain\f5\fs20\cf2 'If the index is out of bounds, make it = 0
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 If\plain\f5\fs20\cf0  Index < \plain\f5\fs20\cf1 LBound\plain\f5\fs20\cf0 (strTips) \plain\f5\fs20\cf1 Or\plain\f5\fs20\cf0  Index > \plain\f5\fs20\cf1 UBound\plain\f5\fs20\cf0 (strTips) \plain\f5\fs20\cf1 Then\plain\f5\fs20\cf0  Index = \plain\f5\fs20\cf1 LBound\plain\f5\fs20\cf0 (strTips)
+\par     \plain\f5\fs20\cf2 'Set the tip
+\par \plain\f5\fs20\cf0     lblTipText.Caption = strTips(Index)
+\par     \plain\f5\fs20\cf2 'Set the number
+\par \plain\f5\fs20\cf0     lblTipNumber.Caption = "\plain\f5\fs20\cf3 Tip Number \plain\f5\fs20\cf0 " & Index + 1 & "\plain\f5\fs20\cf3 /\plain\f5\fs20\cf0 " & \plain\f5\fs20\cf1 UBound\plain\f5\fs20\cf0 (strTips) + 1
+\par     \plain\f5\fs20\cf2 'Set the new index to the variable
+\par \plain\f5\fs20\cf0     intCurrentTip = Index
+\par \plain\f5\fs20\cf1 End\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0 
+\par 
+\par \plain\f5\fs20\cf1 Private\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0  Form_Unload(Cancel \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Integer\plain\f5\fs20\cf0 )
+\par     \plain\f5\fs20\cf1 On\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Local\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Error\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Resume\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Next\plain\f5\fs20\cf0 
+\par     \plain\f5\fs20\cf2 'Save whether we want tips at start up
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 Call\plain\f5\fs20\cf0  SaveSetting(app.EXEName, "\plain\f5\fs20\cf3 General\plain\f5\fs20\cf0 ", _
+\par         "\plain\f5\fs20\cf3 Show Tips at Startup\plain\f5\fs20\cf0 ", chkLoadTipsAtStartup.Value)
+\par     \plain\f5\fs20\cf2 'Save current tip index
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 Call\plain\f5\fs20\cf0  SaveSetting(app.EXEName, "\plain\f5\fs20\cf3 General\plain\f5\fs20\cf0 ", _
+\par         "\plain\f5\fs20\cf3 Last Tip\plain\f5\fs20\cf0 ", intCurrentTip)
+\par \plain\f5\fs20\cf1 End\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0 
+\par 
+\par \plain\f5\fs20\cf1 Private\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0  lblTipNumber_MouseDown(Button \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Integer\plain\f5\fs20\cf0 , Shift \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Integer\plain\f5\fs20\cf0 , X \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Single\plain\f5\fs20\cf0 , Y \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Single\plain\f5\fs20\cf0 )
+\par     \plain\f5\fs20\cf1 On\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Local\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Error\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Resume\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Next\plain\f5\fs20\cf0 
+\par     \plain\f5\fs20\cf2 'Left button
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 If\plain\f5\fs20\cf0  Button \plain\f5\fs20\cf1 And\plain\f5\fs20\cf0  vbLeftButton \plain\f5\fs20\cf1 Then\plain\f5\fs20\cf0 
+\par         \plain\f5\fs20\cf2 'Move tip back one, or put to end if we are at first tip
+\par \plain\f5\fs20\cf0         \plain\f5\fs20\cf1 Call\plain\f5\fs20\cf0  SetTip(IIf(intCurrentTip > \plain\f5\fs20\cf1 LBound\plain\f5\fs20\cf0 (strTips), _
+\par             intCurrentTip - 1, \plain\f5\fs20\cf1 UBound\plain\f5\fs20\cf0 (strTips)))
+\par     \plain\f5\fs20\cf2 'Right button
+\par \plain\f5\fs20\cf0     ElseIf Button \plain\f5\fs20\cf1 And\plain\f5\fs20\cf0  vbRightButton \plain\f5\fs20\cf1 Then\plain\f5\fs20\cf0 
+\par         \plain\f5\fs20\cf2 'Move tip forward one, or put to start if we are at last tip
+\par \plain\f5\fs20\cf0         \plain\f5\fs20\cf1 Call\plain\f5\fs20\cf0  SetTip(IIf(intCurrentTip < \plain\f5\fs20\cf1 UBound\plain\f5\fs20\cf0 (strTips), _
+\par             intCurrentTip + 1, \plain\f5\fs20\cf1 LBound\plain\f5\fs20\cf0 (strTips)))
+\par     \plain\f5\fs20\cf1 End\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 If\plain\f5\fs20\cf0 
+\par \plain\f5\fs20\cf1 End\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Sub\plain\f5\fs20\cf0 
+\par 
+\par \plain\f5\fs20\cf1 Private\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Function\plain\f5\fs20\cf0  OpenText(\plain\f5\fs20\cf1 ByVal\plain\f5\fs20\cf0  Filename \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 String\plain\f5\fs20\cf0 ) \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 String\plain\f5\fs20\cf0 
+\par     \plain\f5\fs20\cf1 On\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Local\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Error\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 GoTo\plain\f5\fs20\cf0  ErrorHandler
+\par     \plain\f5\fs20\cf1 Dim\plain\f5\fs20\cf0  FileNumber \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Integer\plain\f5\fs20\cf0 
+\par     \plain\f5\fs20\cf1 Dim\plain\f5\fs20\cf0  TempText \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 String\plain\f5\fs20\cf0 
+\par                                         
+\par     \plain\f5\fs20\cf2 'Find a free file number
+\par \plain\f5\fs20\cf0     FileNumber = FreeFile
+\par     \plain\f5\fs20\cf2 'Open the file for input
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 Open\plain\f5\fs20\cf0  Filename \plain\f5\fs20\cf1 For\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Input\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 As\plain\f5\fs20\cf0  #FileNumber
+\par         \plain\f5\fs20\cf2 'Return the file's contents
+\par \plain\f5\fs20\cf0         OpenText = \plain\f5\fs20\cf1 Input\plain\f5\fs20\cf0 (LOF(FileNumber), FileNumber)
+\par     \plain\f5\fs20\cf2 'Close the file
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 Close\plain\f5\fs20\cf0  #FileNumber
+\par 
+\par     \plain\f5\fs20\cf2 'Exit the function so as not cause an error
+\par \plain\f5\fs20\cf0     \plain\f5\fs20\cf1 Exit\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Function\plain\f5\fs20\cf0 
+\par 
+\par ErrorHandler:
+\par     \plain\f5\fs20\cf2 'Tell the user the error and ask if another method of opening should be tried
+\par \plain\f5\fs20\cf0     MsgBox "\plain\f5\fs20\cf3 Sorry the file \plain\f5\fs20\cf0 " & Filename & "\plain\f5\fs20\cf3  could not be opened.\plain\f5\fs20\cf0 " & vbNewLine & _
+\par         "\plain\f5\fs20\cf3 Details: \plain\f5\fs20\cf0 " & Err.Number & "\plain\f5\fs20\cf3  - \plain\f5\fs20\cf0 " & Err.Description, vbCritical + vbOKOnly, "\plain\f5\fs20\cf3 Error\plain\f5\fs20\cf0 "
+\par \plain\f5\fs20\cf1 End\plain\f5\fs20\cf0  \plain\f5\fs20\cf1 Function\plain\f2\fs17 
+\par }
+ 

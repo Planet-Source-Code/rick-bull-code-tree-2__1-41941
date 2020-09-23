@@ -1,0 +1,118 @@
+           **********************************
+           * Code Tree Version 2 Change-log *
+           **********************************
+
+
+---
+ Sunday 29 December 2002
+
+* Figured out that the problem with the new section code (the new section was not showing up in the tree) was due to the fact that I was not copying the icons to the new directory. So I added the code and it is working fine now!
+
+
+---
+ Satuarday 28 December 2002
+
+* Uploaded the source code to both my site (http://www.rickbull.co.uk/Downloads.php) and planet-source-code (http://www.Planet-Source-Code.com/vb/scripts/ShowCode.asp?txtCodeId=41941&lngWId=1). But do I get any money in return?! No! Typical. Got some nice comments though, so thanks to all those people.
+
+
+---
+ Satuarday 23 November 2002
+
+* Added a "Thanks.txt" file for people who have contributed something to Code Tree. Currently has one name!
+* Added a menu item for the Tree to allow you to create new sections - it is creating the folders but they are not being shown in the Tree, and I can not figure out why!
+
+
+---
+ Satuarday 23 November 2002
+
+* Recieved two e-mails yesterday one giving me some icons for C# and VB.NET, and there other offering to contribute some codes.                
+* Added a "Save Selected Item As..." option to the "Tree" menu, to allow users to save codes or folder to a different location.                   
+* Also added a "Rename Select Item..." option to allow files/folders to be renamed.
+
+
+---
+ Wednesday 03 October 2002
+
+* Added a form with a progress bar that shows the progress when formatting codes. Will probably change it later to show in the status bar or something, and disable the ability to close the window while code formatting is taking place.
+
+
+---
+ Monday 30 September 2002
+
+* Found problem with alignment is due to word wrapping being off for code window. Will try to find fix.
+
+
+---
+ Monday 30 September 2002
+
+* Added a menu item to the tree menu for deleting selected item, and moved the orignal code (under the keyup event) to the menu item's click event.   
+* Noticed the alignment toolbar buttons seem to have stopped working (or never worked!) for the code window. Trying to find the problem.
+
+
+---
+ Wednesday 25 September 2002
+
+* Changed the change case code, so that it finds sentence start/ends better.
+
+
+---
+ Monday 23 September 2002
+
+* Changed the manage links code slightly so that when you add a new link or seperator it will appear at the position of the selected item.      
+* Wrote a bubble sort function, and used it for formatting options in the Edit > Format menu so now the different languages appear in alphabetical order.
+
+
+---
+ Monday 16 September 2002
+
+* Added the option to turn word-wrapping on/off for the code and notes windows.                   
+* Merged the toolbars and bookmarks tabs in the options dialog into one, and added checkboxes for the word wrapping options described above.
+* Added code to save the size of the tree on exit of the program, and reload it on start-up.
+* Added code for the manage links window to enable the position of the links to be changed, and modified the delete code so that it works with multiple selections.
+* "Finished" coding the manage links section so the changes actually occur when you click OK.
+* Changed the keypress code for the code and notes windows so that if tab is pressed and no text is selected it adds a tab character, otherwise it indents the selected text by one tab on each line (before it just replaced the selected text with a tab character regardless).
+* Changed the compiler options so that the revision number is incremented with each build, so now you can know what the real version you are using!
+
+
+---
+ Sunday 15 September 2002
+
+* Made the program save the changes before opening a new window when File -> Window -> New Window is choosen, so that any changes made will be present in the new window also.                   
+* Fixed the bug that made the formatting toolbar to not be displayed when starting up if it was visible when shutting down, but the bookmarks tab was selected.
+* Added some extra checking on the options loading code, that checks if specified directories (for code/toolbars/etc. paths) are found, and if not reverts to the default paths. This was done because if you change path of the application and don't delete the config file, all the codes and images etc. are missing.
+* Adjusted the position of the first checkbox in the options window, under the Bookmarks tabs so that it is inline with the first items in the other tabs. Wow, huh? Really worth documenting!
+* Wrote the code to use the Sentence case conversion. I don't think there are any bugs, but let me know if you find any.
+
+
+---
+ Satuarday 14 September 2002
+
+* Finally implemented the find/replace function for the code and notes window.                    
+* Moved the find code to it's own module so that I can now implement a Find Next function (F3).      
+* Implemented the Find Next function for all panes. 
+* Implemented save/load options in Find dialog on unload/load.                                      
+* Re-ordered tab index in Find dialog.              
+* Changed code to stop focus changing when Tab is pressed in Code and Notes window, for more efficient code.
+
+
+---
+ Friday 13 September 2002
+
+* Got an e-mail from Chiel-Jan thanking me for my program which gave me some enthusiasm to fix the following. It is much appreciated.            
+* Changed the tree loading code to use the FindFirst/NextFile API call for increased speed, and also to remove the need to open and close nodes through code to find files in sub directories. Now it will automatically load all files/directoris in sub directories (recursion).
+* Added a checkbox in the options to let the user choose whether they want the program to search for new files/folders each time a node is expanded in the tree.
+* Added a menu item to view this change log file.
+* Added the proper comments strings to the PHP config file (// to \n, /* to */ and # to \n).
+* Added a menu to the hyper-link active X that allows the user to copy the text or address of the link to the clipboard on right-click.
+
+
+---
+ Sundday 14 April 2002 - Thursday 12 September 2002
+
+* Worked on the program but didn't think of documenting it, so that's all lost in the sands of time! Oh well no big loss.
+
+
+---
+ Satuarday 13 April 2002
+
+* Uploaded version 1 of Code Tree. It's got a few bugs, and is not very effecient, but I found it useful, and thought others may too. URI is <http://www.planet-source-code.com/vb/scripts/ShowCode.asp?txtCodeId=33770&lngWId=1>. Got quite a lot of good feedback, so I thought I would work on a new and more effecient version. So I did!
