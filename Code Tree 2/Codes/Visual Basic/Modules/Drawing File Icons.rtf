@@ -1,0 +1,76 @@
+{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\fswiss Verdana;}{\f3\fswiss Tahoma;}{\f4\fswiss Courier New;}{\f5\fswiss\fprq2 System;}{\f6\fswiss Tahoma;}}
+{\colortbl\red0\green0\blue0;\red0\green128\blue0;\red128\green0\blue128;\red0\green0\blue128;}
+\deflang2057\pard\plain\f2\fs20\cf0\b\ul Drawing File Icons\plain\f2\fs20\cf0 
+\par 
+\par This module allows you to extract a file's icon to a picture box (or anything else with a DC). Use it like:
+\par 
+\par \pard\li300\plain\f4\fs20\cf3 Call\plain\f4\fs20\cf0  GetIcon(\plain\f4\fs20\cf3 P\plain\f4\fs20\cf0 icture1.hDC \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 , App.Path & "\\" & App.EXEName) \plain\f4\fs20\cf1 '32 * 32\plain\f4\fs20\cf3 
+\par Call\plain\f4\fs20\cf0  GetIcon(\plain\f4\fs20\cf3 P\plain\f4\fs20\cf0 icture1.hDC \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 , App.Path & "\\" & App.EXEName, , [16 by 16]) \plain\f4\fs20\cf1 '16 * 16\plain\f4\fs20\cf0 
+\par \pard\plain\f4\fs20\cf0 
+\par 
+\par And here's the module:
+\par 
+\par \plain\f2\fs20\cf0 
+\par \pard\li300\plain\f4\fs20\cf3 Option\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Explicit\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf1 'Constants ------------
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Const\plain\f4\fs20\cf0  MAX_PATH = 260
+\par \plain\f4\fs20\cf1 'ShellInfo Flags
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Const\plain\f4\fs20\cf0  SHGFI_DISPLAYNAME = &H200
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Const\plain\f4\fs20\cf0  SHGFI_EXETYPE = &H2000
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Const\plain\f4\fs20\cf0  SHGFI_SYSICONINDEX = &H4000 \plain\f4\fs20\cf1 'System icon index
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Const\plain\f4\fs20\cf0  SHGFI_LARGEICON = &H0       \plain\f4\fs20\cf1 'Large icon
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Const\plain\f4\fs20\cf0  SHGFI_SMALLICON = &H1       \plain\f4\fs20\cf1 'Small icon
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Const\plain\f4\fs20\cf0  SHGFI_SHELLICONSIZE = &H4
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Const\plain\f4\fs20\cf0  SHGFI_TYPENAME = &H400
+\par 
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Const\plain\f4\fs20\cf0  ILD_TRANSPARENT = &H1       \plain\f4\fs20\cf1 'Display transparent
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Const\plain\f4\fs20\cf0  BASIC_SHGFI_FLAGS = SHGFI_TYPENAME _
+\par         \plain\f4\fs20\cf3 Or\plain\f4\fs20\cf0  SHGFI_SHELLICONSIZE \plain\f4\fs20\cf3 Or\plain\f4\fs20\cf0  SHGFI_SYSICONINDEX _
+\par         \plain\f4\fs20\cf3 Or\plain\f4\fs20\cf0  SHGFI_DISPLAYNAME \plain\f4\fs20\cf3 Or\plain\f4\fs20\cf0  SHGFI_EXETYPE
+\par \plain\f4\fs20\cf1 '----------------------
+\par \plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf1 'Enumerations ---------
+\par \plain\f4\fs20\cf3 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Enum\plain\f4\fs20\cf0  IconSizeConstants \plain\f4\fs20\cf1 'Icon sizes
+\par \plain\f4\fs20\cf0     [16 by 16]
+\par     [32 by 32]
+\par \plain\f4\fs20\cf3 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Enum\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf1 '----------------------
+\par \plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf1 'Types ----------------
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Type\plain\f4\fs20\cf0  SHFILEINFO
+\par   hIcon \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par   iIcon \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par   dwAttributes \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par   szDisplayName \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0  * MAX_PATH
+\par   szTypeName \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0  * 80
+\par \plain\f4\fs20\cf3 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Type\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf1 '----------------------
+\par \plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf1 'API Declarations -----
+\par 'comctl32.dll:
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Declare\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Function\plain\f4\fs20\cf0  ImageList_Draw Lib "\plain\f4\fs20\cf2 comctl32.dll\plain\f4\fs20\cf0 " (\plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  himl&, \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  i&, \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  hDCDest&, \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  x&, \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  y&, \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  flags&) \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf1 'kernel32:
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Declare\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Sub\plain\f4\fs20\cf0  MoveMemory Lib "\plain\f4\fs20\cf2 kernel32\plain\f4\fs20\cf0 " \plain\f4\fs20\cf3 Alias\plain\f4\fs20\cf0  "\plain\f4\fs20\cf2 RtlMoveMemory\plain\f4\fs20\cf0 " (dest \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  Any, \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  Source \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 , \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  length \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 )
+\par \plain\f4\fs20\cf1 'shell32.dll:
+\par \plain\f4\fs20\cf3 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Declare\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Function\plain\f4\fs20\cf0  SHGetFileInfo Lib "\plain\f4\fs20\cf2 shell32.dll\plain\f4\fs20\cf0 " \plain\f4\fs20\cf3 Alias\plain\f4\fs20\cf0  "\plain\f4\fs20\cf2 SHGetFileInfoA\plain\f4\fs20\cf0 " (\plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  pszPath \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0 , \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  dwFileAttributes \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 , psfi \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  SHFILEINFO, \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  cbSizeFileInfo \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 , \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  uFlags \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 ) \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf1 '----------------------
+\par \plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf3 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Sub\plain\f4\fs20\cf0  GetIcon(\plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  hDC \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 , _
+\par     \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  Filename \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 String\plain\f4\fs20\cf0 , _
+\par     \plain\f4\fs20\cf3 Optional\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  Index \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long = 0\plain\f4\fs20\cf0 , _
+\par     \plain\f4\fs20\cf3 Optional\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 ByVal\plain\f4\fs20\cf0  IconSize \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  IconSizeConstants = [32 by 32])
+\par     \plain\f4\fs20\cf3 On\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Local\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Error\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Resume\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Next\plain\f4\fs20\cf0 
+\par     \plain\f4\fs20\cf3 Dim\plain\f4\fs20\cf0  ShInfo \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  SHFILEINFO
+\par     \plain\f4\fs20\cf3 Dim\plain\f4\fs20\cf0  IconHandle \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 , IconSizeFlag \plain\f4\fs20\cf3 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Long\plain\f4\fs20\cf0 
+\par 
+\par     \plain\f4\fs20\cf1 'Select whether we want a small or a large icon
+\par \plain\f4\fs20\cf0     IconSizeFlag = IIf(IconSize = [16 by 16], SHGFI_SMALLICON, SHGFI_LARGEICON)
+\par     \plain\f4\fs20\cf1 'Get a handle to the icon
+\par \plain\f4\fs20\cf0     IconHandle = SHGetFileInfo(Filename, 0&, ShInfo, Len(ShInfo), _
+\par         BASIC_SHGFI_FLAGS \plain\f4\fs20\cf3 Or\plain\f4\fs20\cf0  IconSizeFlag)
+\par     \plain\f4\fs20\cf1 'If it's found draw it to the specified hDC
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf3 If\plain\f4\fs20\cf0  IconHandle <> 0 \plain\f4\fs20\cf3 Then\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Call\plain\f4\fs20\cf0  ImageList_Draw(IconHandle, _
+\par         ShInfo.iIcon, hDC, 0, 0, ILD_TRANSPARENT)
+\par \plain\f4\fs20\cf3 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf3 Sub\plain\f6\fs17 
+\par }
+ 

@@ -1,0 +1,23 @@
+...that you can double-click the 'NUM', 'CAPS', 'INS' and 'SCRL' fields in the status bar to toggle the key on/off?
+...that you can format the selected code to an language that you have a config file for in you 'Formatting' folder? Simply highlight the text you want to format (or none if you want to format it all) and choose 'Edit' --> 'Format' --> 'Format As' and select the language.
+...that you can gain quick access to common tools in the Code and Notes text boxes by right clicking?
+...that your bookmarks will be saved and reloaded (unless the relevant code has been removed) when you quit and restart Code Tree?
+...you can copy the selected text in the Code window to your Notes by clicking the note pad in the toolbar? You can also copy the whole file to your notes by choosing the option from the button's drop down menu.
+...you can print selectively, by highlighting text and then clicking print?
+...that you can use a built in character map by clicking the omega sign in the format toolbar?
+...that you can customize the last two rows in the colour dialog by right-clicking them?
+...that these tips often annoy people, even though they provide a lot of help?
+...that you can convert the selected text's case by using the 'Change Case' menu in the format toolbar? It will also store the last option you used, and you can simply click the button to use the same option.
+...that you can use the find window to search through the Bookmarks and Tree view as well as the Code and Notes?
+...that you can add the current code to your bookmarks by pressing 'Ctrl + T'?
+...that you can customize the toolbars without going to the customize dialog by holding down 'Shift' and dragging the toolbar buttons?
+...that the 'Help' --> 'Web Links' menus provides you with many useful websites. You can customize this list by editing the 'Site List.txt' file in the application's path.
+...that you can use different button sets for the toolbars, by simply changing the bitmap files in the Toolbars folder?
+...that you can access many useful features of the tree by right-clicking it, or clicking the 'Tree' menu?
+...that Rick Bull is the most cleverest, handsomest boy in the whole wide world? And it must be true because his mummy and daddy told him so, and they love him lots, and lots, and lots!
+...that you can change all these tips by editing the file "Tips.txt", and add your own to say funny things like: "[Insert your name] wrote this program, not Rick Bull", or "Red Lorry, Yellow Lorry, Red Rolly, Rellow Yorry!" or "I'm hungry, please enter some energion. Transformers, Robots in disguise!".
+...that you can click 'Refresh' from the Tree menu to check if there are any more codes since the tree was last loaded.
+...that it's quite hard trying to think of useful tips? That's why there are some silly ones in here too. Did any of them make you laugh? I doubt it they're not exactly funny are they? Pathetic is the word that springs to mind. So if you'd like to e-mail me some abuse please go to http://www.rickmusic.co.uk/ - thank you for your comments.
+...that if you click the text colour toolbar button, and decide you don't want to change the colour after all, all you have to do is press the Escape key and the dialog will disappear?
+...that you you can delete the active file/folder in the tree by pressing the "Del" button on the keyboard? Don't worry if you change your mind, as it should end up in the Recycle Bin.
+...that you have been through all the tips, clicking 'Next Tip' will restart the tips!

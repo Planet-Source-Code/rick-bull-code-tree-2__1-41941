@@ -1,0 +1,130 @@
+{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\fswiss Tahoma;}{\f3\froman\fprq2 Times New Roman;}{\f4\froman\fprq2 Verdana;}{\f5\fswiss\fprq2 System;}{\f6\froman\fprq2 Courier New;}{\f7\fswiss\fprq2 Courier New;}{\f8\fswiss Tahoma;}}
+{\colortbl\red0\green0\blue0;\red128\green0\blue128;\red0\green128\blue0;\red0\green0\blue128;}
+\deflang2057\pard\plain\f4\fs20\cf0\b\ul Live Clock\plain\f4\fs20\cf0 
+\par 
+\par This script will create a "live" clock that will change every second. Simply place 10 images named "0.gif" through to "9.gif" in a directory named "Images" the same folder as your webpage. Then where you want the clock to appear on your page put the text:
+\par 
+\par \pard\li300\plain\f6\fs20\cf3\b <script\plain\f6\fs20\cf0  type="\plain\f6\fs20\cf1 text/javascript\plain\f6\fs20\cf0 " src="\plain\f6\fs20\cf1 clock.js\plain\f6\fs20\cf0 " charset="\plain\f6\fs20\cf1 iso-8859-2\plain\f6\fs20\cf0 ">\plain\f6\fs20\cf3\b </script\plain\f6\fs20\cf0 >\plain\f4\fs20\cf0 
+\par 
+\par 
+\par \pard\plain\f4\fs20\cf0 And then add to your <body> tag:
+\par 
+\par \pard\li300\plain\f4\fs20\cf0 onload="\plain\f4\fs20\cf1 updateTime();\plain\f4\fs20\cf0 " 
+\par \pard\plain\f4\fs20\cf0 
+\par Then add this to a text file named "clock.js" and save it in the same directory as the web page. Now open the webpage and your clock should start ticking!
+\par 
+\par 
+\par \pard\li300\plain\f6\fs20\cf2 /*Created by Rick Bull (http://www.rickmusic.co.uk/ and  http://www.rickmusic.fsnet.co.uk/) - 11 Feb 2001.
+\par  You are free to distribute and use this script anyway you like but please leave this comment here. Thanks.*/\plain\f6\fs20\cf0 
+\par 
+\par \plain\f6\fs20\cf2 //If you ARE using XHTML change this to ' \\/>'
+\par \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  imageTagEnd = '\plain\f6\fs20\cf1 >\plain\f6\fs20\cf0 ';
+\par 
+\par \plain\f6\fs20\cf2 //Holds the diectory (and prefix if desired) of the images:
+\par \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  imageDirectory = '\plain\f6\fs20\cf1 Clock\\/Images\\/Clock\plain\f6\fs20\cf0 '; 
+\par 
+\par \plain\f6\fs20\cf2 //Holds the extension (and sufix if desired) of the images:
+\par \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  imageType = '\plain\f6\fs20\cf1 .gif\plain\f6\fs20\cf0 '; 
+\par 
+\par \plain\f6\fs20\cf2 //The colon that seperates the seconds/minutes/hours:
+\par \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  imageSeperator = '\plain\f6\fs20\cf1 Clock\\/Images\\/Clock_Colon.gif\plain\f6\fs20\cf0 '; 
+\par 
+\par \plain\f6\fs20\cf2 /*The length of time between clock updates - smaller number = more accurrate 
+\par  but less efficient. 1000 is the max number to use: */\plain\f6\fs20\cf0 
+\par \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  updateInterval = 250;
+\par 
+\par 
+\par \plain\f6\fs20\cf2 //For loops:
+\par \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  loopCounter;
+\par 
+\par \plain\f6\fs20\cf2 //Pre-Load the images into an array:
+\par \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  clockImages = \plain\f6\fs20\cf3\b new\plain\f6\fs20\cf0  Array(9);
+\par \plain\f6\fs20\cf3\b for\plain\f6\fs20\cf0  (loopCounter = 0; loopCounter < clockImages.length; loopCounter++) \{
+\par   clockImages[loopCounter] = \plain\f6\fs20\cf3\b new\plain\f6\fs20\cf0  Image();
+\par   clockImages[loopCounter].src = imageDirectory + loopCounter + imageType 
+\par \}
+\par 
+\par \plain\f6\fs20\cf2 //Write the clock images
+\par \plain\f6\fs20\cf0 document.write('\plain\f6\fs20\cf1 <img src="\plain\f6\fs20\cf0 ' + imageDirectory + '\plain\f6\fs20\cf1 0\plain\f6\fs20\cf0 ' + imageType + '\plain\f6\fs20\cf1 " name="Clock1" alt=""\plain\f6\fs20\cf0 '+ imageTagEnd);
+\par document.write('\plain\f6\fs20\cf1 <img src="\plain\f6\fs20\cf0 ' + imageDirectory + '\plain\f6\fs20\cf1 0\plain\f6\fs20\cf0 ' + imageType + '\plain\f6\fs20\cf1 " name="Clock2" alt=""\plain\f6\fs20\cf0 '+ imageTagEnd);
+\par document.write('\plain\f6\fs20\cf1 <img src="\plain\f6\fs20\cf0 ' + imageSeperator + '\plain\f6\fs20\cf1 " />\plain\f6\fs20\cf0 ');
+\par document.write('\plain\f6\fs20\cf1 <img src="\plain\f6\fs20\cf0 ' + imageDirectory + '\plain\f6\fs20\cf1 0\plain\f6\fs20\cf0 ' + imageType + '\plain\f6\fs20\cf1 " name="Clock3" alt=""\plain\f6\fs20\cf0 '+ imageTagEnd);
+\par document.write('\plain\f6\fs20\cf1 <img src="\plain\f6\fs20\cf0 ' + imageDirectory + '\plain\f6\fs20\cf1 0\plain\f6\fs20\cf0 ' + imageType + '\plain\f6\fs20\cf1 " name="Clock4" alt=""\plain\f6\fs20\cf0 '+ imageTagEnd);
+\par document.write('\plain\f6\fs20\cf1 <img src="\plain\f6\fs20\cf0 ' + imageSeperator + '\plain\f6\fs20\cf1 " />\plain\f6\fs20\cf0 ');
+\par document.write('\plain\f6\fs20\cf1 <img src="\plain\f6\fs20\cf0 ' + imageDirectory + '\plain\f6\fs20\cf1 0\plain\f6\fs20\cf0 ' + imageType + '\plain\f6\fs20\cf1 " name="Clock5" alt=""\plain\f6\fs20\cf0 '+ imageTagEnd);
+\par document.write('\plain\f6\fs20\cf1 <img src="\plain\f6\fs20\cf0 ' + imageDirectory + '\plain\f6\fs20\cf1 0\plain\f6\fs20\cf0 ' + imageType + '\plain\f6\fs20\cf1 " name="Clock6" alt="" \plain\f6\fs20\cf0 '+ imageTagEnd);
+\par document.close();
+\par 
+\par \plain\f6\fs20\cf2 //This is the variable for the handler to the timer - used to stop the clock
+\par \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  timerHandle;
+\par 
+\par \plain\f6\fs20\cf3\b function\plain\f6\fs20\cf0  updateTime() \{
+\par   \plain\f6\fs20\cf2 //Get the date/time and take the time out into seperate vars 
+\par \plain\f6\fs20\cf0   \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  currentTime = \plain\f6\fs20\cf3\b new\plain\f6\fs20\cf0  Date();
+\par   \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  currentSecs = currentTime.getSeconds().toString();
+\par   \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  currentMins = currentTime.getMinutes().toString();
+\par   \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  currentHours = currentTime.getHours().toString();
+\par 
+\par   \plain\f6\fs20\cf2 //Array for the hours/mins/secs image to use
+\par \plain\f6\fs20\cf0   \plain\f6\fs20\cf3\b var\plain\f6\fs20\cf0  currentImage = \plain\f6\fs20\cf3\b new\plain\f6\fs20\cf0  Array(5);
+\par     
+\par   \plain\f6\fs20\cf2 /*This section adds a 0 to any time values less than 10, otherwise we end up with e.g. 12:9:24 rather than 12:09:24
+\par    it also puts each digit in it's own array */\plain\f6\fs20\cf0 
+\par   \plain\f6\fs20\cf3\b if\plain\f6\fs20\cf0  (currentSecs < 10) \{
+\par     currentImage[4] = '\plain\f6\fs20\cf1 0\plain\f6\fs20\cf0 ';
+\par     currentImage[5] = currentSecs;
+\par   \}
+\par   \plain\f6\fs20\cf3\b else\plain\f6\fs20\cf0  \{
+\par     currentImage[4] = currentSecs.substring(0, 1);
+\par     currentImage[5] = currentSecs.substring(1, 2);
+\par   \}
+\par 
+\par   \plain\f6\fs20\cf3\b if\plain\f6\fs20\cf0  (currentMins < 10) \{
+\par     currentImage[2] = '\plain\f6\fs20\cf1 0\plain\f6\fs20\cf0 ';
+\par     currentImage[3] = currentMins;
+\par   \}
+\par   \plain\f6\fs20\cf3\b else\plain\f6\fs20\cf0  \{
+\par     currentImage[2] = currentMins.substring(0, 1);
+\par     currentImage[3] = currentMins.substring(1, 2);
+\par   \}
+\par 
+\par   \plain\f6\fs20\cf3\b if\plain\f6\fs20\cf0  (currentHours < 10) \{
+\par     currentImage[0] = '\plain\f6\fs20\cf1 0\plain\f6\fs20\cf0 ';
+\par     currentImage[1] = currentHours;
+\par   \}
+\par   \plain\f6\fs20\cf3\b else\plain\f6\fs20\cf0  \{
+\par     currentImage[0] = currentHours.substring(0, 1);
+\par     currentImage[1] = currentHours.substring(1, 2);
+\par   \}
+\par 
+\par   \plain\f6\fs20\cf2 //Add the image path and extension to each image name in the array 
+\par \plain\f6\fs20\cf0   \plain\f6\fs20\cf3\b for\plain\f6\fs20\cf0  (loopCounter = 0; loopCounter < currentImage.length; loopCounter++) \{
+\par     currentImage[loopCounter] = imageDirectory + currentImage[loopCounter] + imageType;
+\par   \}
+\par 
+\par   \plain\f6\fs20\cf2 /*If the image is not already loaded lead it. The substring method is used to check if the image is loaded, 
+\par    because the img src will be a full path, but out pre-loaded ones probably won't */\plain\f6\fs20\cf0  
+\par   \plain\f6\fs20\cf3\b if\plain\f6\fs20\cf0  (document['\plain\f6\fs20\cf1 Clock1\plain\f6\fs20\cf0 '].src.substring(document['\plain\f6\fs20\cf1 Clock1\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  - currentImage[0].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 , 
+\par     document['\plain\f6\fs20\cf1 Clock1\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  + currentImage[0].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 ) \plain\f6\fs20\cf3\b !=\plain\f6\fs20\cf0   currentImage[0]) document['\plain\f6\fs20\cf1 Clock1\plain\f6\fs20\cf0 '].src =  currentImage[0]
+\par   \plain\f6\fs20\cf3\b if\plain\f6\fs20\cf0  (document['\plain\f6\fs20\cf1 Clock2\plain\f6\fs20\cf0 '].src.substring(document['\plain\f6\fs20\cf1 Clock2\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  - currentImage[1].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 , 
+\par     document['\plain\f6\fs20\cf1 Clock2\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  + currentImage[1].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 ) \plain\f6\fs20\cf3\b !=\plain\f6\fs20\cf0   currentImage[1]) document['\plain\f6\fs20\cf1 Clock2\plain\f6\fs20\cf0 '].src =  currentImage[1]
+\par   \plain\f6\fs20\cf3\b if\plain\f6\fs20\cf0  (document['\plain\f6\fs20\cf1 Clock3\plain\f6\fs20\cf0 '].src.substring(document['\plain\f6\fs20\cf1 Clock3\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  - currentImage[2].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 , 
+\par     document['\plain\f6\fs20\cf1 Clock3\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  + currentImage[2].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 ) \plain\f6\fs20\cf3\b !=\plain\f6\fs20\cf0   currentImage[2]) document['\plain\f6\fs20\cf1 Clock3\plain\f6\fs20\cf0 '].src =  currentImage[2]
+\par   \plain\f6\fs20\cf3\b if\plain\f6\fs20\cf0  (document['\plain\f6\fs20\cf1 Clock4\plain\f6\fs20\cf0 '].src.substring(document['\plain\f6\fs20\cf1 Clock4\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  - currentImage[3].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 , 
+\par     document['\plain\f6\fs20\cf1 Clock4\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  + currentImage[3].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 ) \plain\f6\fs20\cf3\b !=\plain\f6\fs20\cf0   currentImage[3]) document['\plain\f6\fs20\cf1 Clock4\plain\f6\fs20\cf0 '].src =  currentImage[3]
+\par   \plain\f6\fs20\cf3\b if\plain\f6\fs20\cf0  (document['\plain\f6\fs20\cf1 Clock5\plain\f6\fs20\cf0 '].src.substring(document['\plain\f6\fs20\cf1 Clock5\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  - currentImage[4].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 , 
+\par     document['\plain\f6\fs20\cf1 Clock5\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  + currentImage[4].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 ) \plain\f6\fs20\cf3\b !=\plain\f6\fs20\cf0   currentImage[4]) document['\plain\f6\fs20\cf1 Clock5\plain\f6\fs20\cf0 '].src =  currentImage[4]
+\par   \plain\f6\fs20\cf3\b if\plain\f6\fs20\cf0  (document['\plain\f6\fs20\cf1 Clock6\plain\f6\fs20\cf0 '].src.substring(document['\plain\f6\fs20\cf1 Clock6\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  - currentImage[5].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 , 
+\par     document['\plain\f6\fs20\cf1 Clock6\plain\f6\fs20\cf0 '].src.\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0  + currentImage[5].\plain\f6\fs20\cf3\b length\plain\f6\fs20\cf0 ) \plain\f6\fs20\cf3\b !=\plain\f6\fs20\cf0   currentImage[5]) document['\plain\f6\fs20\cf1 Clock6\plain\f6\fs20\cf0 '].src =  currentImage[5]
+\par 
+\par   \plain\f6\fs20\cf2 //Keep updating the time
+\par \plain\f6\fs20\cf0   timerHandle = setTimeout('\plain\f6\fs20\cf1 updateTime()\plain\f6\fs20\cf0 ', updateInterval);
+\par \}
+\par 
+\par \plain\f6\fs20\cf3\b function\plain\f6\fs20\cf0  stopUpdates() \{
+\par \plain\f6\fs20\cf2 //Stops the clock from updating\plain\f6\fs20\cf0 
+\par     clearTimeout(timerHandle);
+\par \}\plain\f3\fs20\cf0 
+\par \pard\plain\f8\fs20\cf0 
+\par }
+ 

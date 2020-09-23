@@ -1,0 +1,72 @@
+{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\fswiss Verdana;}{\f3\fswiss Tahoma;}{\f4\fswiss\fprq2 Verdana;}{\f5\fswiss\fprq2 Courier New;}{\f6\fswiss\fprq2 System;}{\f7\fswiss Courier New;}{\f8\fswiss Tahoma;}}
+{\colortbl\red0\green0\blue0;\red128\green0\blue128;\red0\green0\blue128;\red0\green128\blue0;}
+\deflang2057\pard\plain\f2\fs20\cf0\b\ul Get File Version\plain\f2\fs20\cf0 
+\par 
+\par This module will return the version of the specified file. If you want more info, such as the build number uncomment the last couple of bits of the GetFileVersion function.
+\par \plain\f7\fs20\cf3 
+\par \pard\li300\plain\f7\fs20\cf3 'Constants ------------
+\par \plain\f7\fs20\cf2 Private\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Const\plain\f7\fs20\cf0  MAX_PATH = 260\plain\f7\fs20\cf3 
+\par 'Types ----------------
+\par \plain\f7\fs20\cf2 Private\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Type\plain\f7\fs20\cf0  SHFILEINFO
+\par   hIcon \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 
+\par   iIcon \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 
+\par   dwAttributes \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 
+\par   szDisplayName \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 String\plain\f7\fs20\cf0  * MAX_PATH
+\par   szTypeName \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 String\plain\f7\fs20\cf0  * 80
+\par \plain\f7\fs20\cf2 End\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Type\plain\f7\fs20\cf0 
+\par \plain\f7\fs20\cf2 Private\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Type\plain\f7\fs20\cf0  VS_FIXEDFILEINFO
+\par    dwSignature \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 
+\par    dwStrucVersionl \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Integer\plain\f7\fs20\cf0      \plain\f7\fs20\cf3 '  e.g. = &h0000 = 0
+\par \plain\f7\fs20\cf0    dwStrucVersionh \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Integer\plain\f7\fs20\cf0      \plain\f7\fs20\cf3 '  e.g. = &h0042 = .42
+\par \plain\f7\fs20\cf0    dwFileVersionMSl \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Integer\plain\f7\fs20\cf0     \plain\f7\fs20\cf3 '  e.g. = &h0003 = 3
+\par \plain\f7\fs20\cf0    dwFileVersionMSh \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Integer\plain\f7\fs20\cf0     \plain\f7\fs20\cf3 '  e.g. = &h0075 = .75
+\par \plain\f7\fs20\cf0    dwFileVersionLSl \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Integer\plain\f7\fs20\cf0     \plain\f7\fs20\cf3 '  e.g. = &h0000 = 0
+\par \plain\f7\fs20\cf0    dwFileVersionLSh \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Integer\plain\f7\fs20\cf0     \plain\f7\fs20\cf3 '  e.g. = &h0031 = .31
+\par \plain\f7\fs20\cf0    dwProductVersionMSl \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Integer\plain\f7\fs20\cf0  \plain\f7\fs20\cf3 '  e.g. = &h0003 = 3
+\par \plain\f7\fs20\cf0    dwProductVersionMSh \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Integer\plain\f7\fs20\cf0  \plain\f7\fs20\cf3 '  e.g. = &h0010 = .1
+\par \plain\f7\fs20\cf0    dwProductVersionLSl \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Integer\plain\f7\fs20\cf0  \plain\f7\fs20\cf3 '  e.g. = &h0000 = 0
+\par \plain\f7\fs20\cf0    dwProductVersionLSh \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Integer\plain\f7\fs20\cf0  \plain\f7\fs20\cf3 '  e.g. = &h0031 = .31
+\par \plain\f7\fs20\cf0    dwFileFlagsMask \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0         \plain\f7\fs20\cf3 '  = &h3F for version "0.42"
+\par \plain\f7\fs20\cf0    dwFileFlags \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0             \plain\f7\fs20\cf3 '  e.g. VFF_DEBUG Or VFF_PRERELEASE
+\par \plain\f7\fs20\cf0    dwFileOS \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0                \plain\f7\fs20\cf3 '  e.g. VOS_DOS_WINDOWS16
+\par \plain\f7\fs20\cf0    dwFileType \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0              \plain\f7\fs20\cf3 '  e.g. VFT_DRIVER
+\par \plain\f7\fs20\cf0    dwFileSubtype \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0           \plain\f7\fs20\cf3 '  e.g. VFT2_DRV_KEYBOARD
+\par \plain\f7\fs20\cf0    dwFileDateMS \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0            \plain\f7\fs20\cf3 '  e.g. 0
+\par \plain\f7\fs20\cf0    dwFileDateLS \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0            \plain\f7\fs20\cf3 '  e.g. 0
+\par \plain\f7\fs20\cf2 End\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Type\plain\f7\fs20\cf0 
+\par \plain\f7\fs20\cf3 '----------------------
+\par \plain\f7\fs20\cf0 
+\par \plain\f7\fs20\cf3 'API Declarations -----
+\par 'kernel32:
+\par \plain\f7\fs20\cf2 Private\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Declare\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Sub\plain\f7\fs20\cf0  MoveMemory Lib "\plain\f7\fs20\cf1 kernel32\plain\f7\fs20\cf0 " \plain\f7\fs20\cf2 Alias\plain\f7\fs20\cf0  "\plain\f7\fs20\cf1 RtlMoveMemory\plain\f7\fs20\cf0 " (dest \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  Any, \plain\f7\fs20\cf2 ByVal\plain\f7\fs20\cf0  Source \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 , \plain\f7\fs20\cf2 ByVal\plain\f7\fs20\cf0  length \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 )
+\par \plain\f7\fs20\cf3 'Version.dll:
+\par \plain\f7\fs20\cf2 Private\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Declare\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Function\plain\f7\fs20\cf0  GetFileVersionInfo Lib "\plain\f7\fs20\cf1 Version.dll\plain\f7\fs20\cf0 " \plain\f7\fs20\cf2 Alias\plain\f7\fs20\cf0  "\plain\f7\fs20\cf1 GetFileVersionInfoA\plain\f7\fs20\cf0 " (\plain\f7\fs20\cf2 ByVal\plain\f7\fs20\cf0  lptstrFilename \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 String\plain\f7\fs20\cf0 , \plain\f7\fs20\cf2 ByVal\plain\f7\fs20\cf0  dwhandle \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 , \plain\f7\fs20\cf2 ByVal\plain\f7\fs20\cf0  dwlen \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 , lpData \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  Any) \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 
+\par \plain\f7\fs20\cf2 Private\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Declare\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Function\plain\f7\fs20\cf0  GetFileVersionInfoSize Lib "\plain\f7\fs20\cf1 Version.dll\plain\f7\fs20\cf0 " \plain\f7\fs20\cf2 Alias\plain\f7\fs20\cf0  "\plain\f7\fs20\cf1 GetFileVersionInfoSizeA\plain\f7\fs20\cf0 " (\plain\f7\fs20\cf2 ByVal\plain\f7\fs20\cf0  lptstrFilename \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 String\plain\f7\fs20\cf0 , lpdwHandle \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 ) \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 
+\par \plain\f7\fs20\cf2 Private\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Declare\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Function\plain\f7\fs20\cf0  VerQueryValue Lib "\plain\f7\fs20\cf1 Version.dll\plain\f7\fs20\cf0 " \plain\f7\fs20\cf2 Alias\plain\f7\fs20\cf0  "\plain\f7\fs20\cf1 VerQueryValueA\plain\f7\fs20\cf0 " (pBlock \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  Any, \plain\f7\fs20\cf2 ByVal\plain\f7\fs20\cf0  lpSubBlock \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 String\plain\f7\fs20\cf0 , lplpBuffer \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  Any, puLen \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 ) \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 
+\par \plain\f7\fs20\cf3 '----------------------
+\par \plain\f7\fs20\cf0 
+\par \plain\f7\fs20\cf2 Private\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Function\plain\f7\fs20\cf0  GetFileVersion(\plain\f7\fs20\cf2 ByVal\plain\f7\fs20\cf0  Path \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 String\plain\f7\fs20\cf0 ) \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 String\plain\f7\fs20\cf0 
+\par     \plain\f7\fs20\cf2 On\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Local\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Error\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Resume\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Next\plain\f7\fs20\cf0 
+\par     \plain\f7\fs20\cf2 Dim\plain\f7\fs20\cf0  Buffer() \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Byte\plain\f7\fs20\cf0 
+\par     \plain\f7\fs20\cf2 Dim\plain\f7\fs20\cf0  DummyVar \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 , ReturnValue \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 , VersionPointer \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Long\plain\f7\fs20\cf0 
+\par     \plain\f7\fs20\cf2 Dim\plain\f7\fs20\cf0  VersionBuffer \plain\f7\fs20\cf2 As\plain\f7\fs20\cf0  VS_FIXEDFILEINFO
+\par 
+\par     \plain\f7\fs20\cf3 'Get the size of the version info
+\par \plain\f7\fs20\cf0     ReturnValue = GetFileVersionInfoSize(Path, DummyVar)
+\par     \plain\f7\fs20\cf3 'If there version info
+\par \plain\f7\fs20\cf0     \plain\f7\fs20\cf2 If\plain\f7\fs20\cf0  ReturnValue > 0 \plain\f7\fs20\cf2 Then\plain\f7\fs20\cf0 
+\par         \plain\f7\fs20\cf3 'Get the version info
+\par \plain\f7\fs20\cf0         \plain\f7\fs20\cf2 ReDim\plain\f7\fs20\cf0  Buffer(ReturnValue)
+\par         \plain\f7\fs20\cf2 Call\plain\f7\fs20\cf0  GetFileVersionInfo(Path, 0&, ReturnValue, Buffer(0))
+\par         \plain\f7\fs20\cf2 Call\plain\f7\fs20\cf0  VerQueryValue(Buffer(0), "\plain\f7\fs20\cf1 \\\plain\f7\fs20\cf0 ", VersionPointer, ReturnValue)
+\par         MoveMemory VersionBuffer, VersionPointer, Len(VersionBuffer)
+\par     
+\par         \plain\f7\fs20\cf3 'Return the version numbers
+\par \plain\f7\fs20\cf0         GetFileVersion = Format$(VersionBuffer.dwFileVersionMSh) & "\plain\f7\fs20\cf1 .\plain\f7\fs20\cf0 " & _
+\par         Format$(VersionBuffer.dwFileVersionMSl) \plain\f7\fs20\cf3 '& "." & _
+\par         Format$(VersionBuffer.dwFileVersionLSh) '& "." & _
+\par         Format$(VersionBuffer.dwFileVersionLSl)
+\par \plain\f7\fs20\cf0     \plain\f7\fs20\cf2 End\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 If\plain\f7\fs20\cf0 
+\par \plain\f7\fs20\cf2 End\plain\f7\fs20\cf0  \plain\f7\fs20\cf2 Function\plain\f7\fs20\cf0  \plain\f8\fs17 
+\par }
+ 

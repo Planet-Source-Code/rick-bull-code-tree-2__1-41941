@@ -1,0 +1,1 @@
+The bitmaps in this folder are the images that are used as the toolbar images. The sub-directories contain the bitmaps for their respective toolbars. If you want to change the images for any of the toolbar buttons simply replace the bitmap in the folder, and the changes will show when you next load Code Tree.

@@ -1,0 +1,332 @@
+{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\fswiss Courier New;}{\f3\fswiss Tahoma;}{\f4\fswiss\fprq2 Courier New;}{\f5\fswiss\fprq2 Verdana;}{\f6\fswiss Tahoma;}{\f7\fswiss\fprq2 System;}{\f8\fswiss\fprq2 Verdana Ref;}}
+{\colortbl\red0\green0\blue0;\red0\green128\blue0;\red0\green0\blue128;\red128\green0\blue128;}
+\deflang2057\pard\plain\f5\fs20\b\ul Scrolling Messages in the Status Bar\plain\f5\fs20 
+\par This script will scroll the text in the status bar. To use simply place all the text below into a text file and name it for example 'status.js'. Then add:
+\par 
+\par \pard\li300\ri300\plain\f4\fs20\cf0 <script charset="\plain\f4\fs20\cf3 iso-8859-1\plain\f4\fs20\cf0 " src="\plain\f4\fs20\cf3 status.js\plain\f4\fs20\cf0 " type="\plain\f4\fs20\cf3 text/javascript\plain\f4\fs20\cf0 "></script>
+\par \pard\plain\f5\fs20 
+\par in the <head> of your HTML document. Then add this to your body tag:
+\par 
+\par \pard\li300\ri300\plain\f5\fs20 onload="loadStrings('The Message You Want To Scroll;Seperated By Semi-Colons'); startScroller();"
+\par \pard\plain\f5\fs20 
+\par If you want a particular scroll mode then add one of the following values in the brackets of startScroller:
+\par 
+\par \pard\li300\ri300{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'b7}}\plain\f5\fs20 {\pntext\f1\'b7\tab} increment
+\par {\pntext\f1\'b7\tab} slide
+\par {\pntext\f1\'b7\tab} squash
+\par {\pntext\f1\'b7\tab} squash2
+\par \pard\plain\f5\fs20 \tab \tab 
+\par If you want to stop the scroller at any point use the stopUpdates() function. Anyway here is the module:
+\par 
+\par 
+\par \pard\li300\plain\f4\fs20\cf1 /*Created by Rick Bull (http://www.rickmusic.co.uk/ and  http://www.rickmusic.fsnet.co.uk/) - 28 Feb 2001.
+\par  You are free to distribute and use this script anyway you like but please leave this comment here. Thanks.*/\plain\f4\fs20\cf0 
+\par  
+\par \plain\f4\fs20\cf1 //YOU CAN EDIT THESE:
+\par //The time between updates
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  updateInterval = 100;
+\par \plain\f4\fs20\cf1 //The time between updates when changing strings
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  pauseBetweenStrings = 3000;
+\par \plain\f4\fs20\cf1 //What gets add to the string in increment mode while there is more text - set to '' for nothing
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  addToIncrementString = '\plain\f4\fs20\cf3 _\plain\f4\fs20\cf0 '
+\par \plain\f4\fs20\cf1 //What gets add in between the strings in squash mode (default = ' ')
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  addToSquashString = '\plain\f4\fs20\cf3  \plain\f4\fs20\cf0 '
+\par \plain\f4\fs20\cf1 //The number of spaces to add on the sliding mode
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  slideSpacesPadding = 25;
+\par 
+\par 
+\par 
+\par \plain\f4\fs20\cf1 //LEAVE THESE ALONE:
+\par //The maximum amount of spaces to add when using slide mode
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  maxSlideSpaces = -1;
+\par \plain\f4\fs20\cf1 //The amount of spaces to add when using slide or squash scroll-mode
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  addSpaces = 0;
+\par \plain\f4\fs20\cf1 //The position of the string that we are to draw upto
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  currentPosition = 0;
+\par \plain\f4\fs20\cf1 //The string that we are on
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  currentArray = 0;
+\par \plain\f4\fs20\cf1 //The maximum amount of spaces to add when using squash or squash2 scroll-mode
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  maxSquashSpaces = 30;
+\par \plain\f4\fs20\cf1 //The handle of the timer so that it can be stopped
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  timerHandle = null;
+\par \plain\f4\fs20\cf1 //The split strings that are to be scrolled
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  outputStrings = \plain\f4\fs20\cf2\b new\plain\f4\fs20\cf0  Array();
+\par 
+\par \plain\f4\fs20\cf1 //Scroll mode constants
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  increment = 0; \plain\f4\fs20\cf1 //Adds another letter to the text
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  slide = 1; \plain\f4\fs20\cf1 //Moves text left from the right
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  squash = 2; \plain\f4\fs20\cf1 //Reduces the spaces between text characters
+\par \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  squash2 = 3 \plain\f4\fs20\cf1 //Slides the last char one less each time
+\par \plain\f4\fs20\cf0 
+\par \plain\f4\fs20\cf1 //Splits the strings into the array
+\par \plain\f4\fs20\cf2\b function\plain\f4\fs20\cf0  loadStrings(delimitedStrings, delimiterChar)
+\par  \{
+\par   \plain\f4\fs20\cf1 //For loops
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  loopCounter;
+\par 
+\par   \plain\f4\fs20\cf1 //If no delimiter is parsed set it to ';'
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (delimiterChar == null) delimiterChar = '\plain\f4\fs20\cf3 ;\plain\f4\fs20\cf0 ';
+\par   \plain\f4\fs20\cf1 //Split the strings to the array
+\par \plain\f4\fs20\cf0   outputStrings = delimitedStrings.split(delimiterChar);
+\par   \plain\f4\fs20\cf1 //Set the current array/posoition to the first
+\par \plain\f4\fs20\cf0   currentArray = 0;
+\par   currentPosition = 0;
+\par 
+\par   \plain\f4\fs20\cf1 //Minimum value so that we will find the biggest one
+\par \plain\f4\fs20\cf0   maxSlideSpaces = -1;
+\par   \plain\f4\fs20\cf1 //Loop for all strings
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b for\plain\f4\fs20\cf0  (loopCounter = 0; loopCounter < outputStrings.length; loopCounter++)
+\par    \{
+\par     \plain\f4\fs20\cf1 //If this one is bigger make the maxSlideSpaces = this one's length
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (outputStrings[loopCounter].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0  > maxSlideSpaces) maxSlideSpaces = outputStrings[loopCounter].length;
+\par    \} 
+\par   \plain\f4\fs20\cf1 //Add the padding to the spaces
+\par \plain\f4\fs20\cf0   maxSlideSpaces +=  slideSpacesPadding;
+\par 
+\par   \plain\f4\fs20\cf2\b return\plain\f4\fs20\cf0  true;
+\par  \}
+\par 
+\par \plain\f4\fs20\cf2\b function\plain\f4\fs20\cf0  startScroller(scrollMode)
+\par  \{
+\par   \plain\f4\fs20\cf1 //If scroll mode is not specified use a random one
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (scrollMode == null) scrollMode = (Math.round(squash2 * Math.random()) + increment);
+\par   \plain\f4\fs20\cf1 //Stop a current scroller
+\par \plain\f4\fs20\cf0   stopUpdates();
+\par   \plain\f4\fs20\cf1 //Set the current array/posoition to the first
+\par \plain\f4\fs20\cf0   currentArray = 0;
+\par   currentPosition = 0;
+\par   \plain\f4\fs20\cf1 //Select the appropriate scroll mode
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (scrollMode == slide) 
+\par    \{
+\par     \plain\f4\fs20\cf1 //Set the addSpaces to the maximum
+\par \plain\f4\fs20\cf0     addSpaces = maxSlideSpaces;
+\par     \plain\f4\fs20\cf1 //Start the scroller
+\par \plain\f4\fs20\cf0     slideText();
+\par    \}
+\par   \plain\f4\fs20\cf1 //Start it
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (scrollMode == increment) incrementText();
+\par   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (scrollMode == squash) 
+\par    \{
+\par     \plain\f4\fs20\cf1 //Set addSpaces to maxSquashSpaces so as to start with the spaced out text, man!
+\par \plain\f4\fs20\cf0     addSpaces = maxSquashSpaces;
+\par     \plain\f4\fs20\cf1 //Start the scroller
+\par \plain\f4\fs20\cf0     squashText();
+\par    \}
+\par   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (scrollMode == squash2) 
+\par    \{
+\par     \plain\f4\fs20\cf1 //Set addSpaces to maxSquashSpaces so as to start with the spaced out text, man!
+\par \plain\f4\fs20\cf0     addSpaces = maxSquashSpaces;
+\par     \plain\f4\fs20\cf1 //Start the scroller
+\par \plain\f4\fs20\cf0     squashText2();
+\par    \}
+\par 
+\par   \plain\f4\fs20\cf2\b return\plain\f4\fs20\cf0  true;
+\par  \}
+\par 
+\par \plain\f4\fs20\cf2\b function\plain\f4\fs20\cf0  squashText2()
+\par  \{
+\par   \plain\f4\fs20\cf1 //If we are to move on to the next char in the current string
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (currentPosition < (outputStrings[currentArray].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0 ) \plain\f4\fs20\cf2\b &&\plain\f4\fs20\cf0  addSpaces == 0) 
+\par    \{
+\par     \plain\f4\fs20\cf1 //Increment the current position
+\par \plain\f4\fs20\cf0     currentPosition++;
+\par     \plain\f4\fs20\cf1 //Set the amount of spaces to the maximum
+\par \plain\f4\fs20\cf0     addSpaces = maxSquashSpaces
+\par    \}
+\par   \plain\f4\fs20\cf1 //If we can take spaces away from the current string take one away
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (currentPosition < outputStrings[currentArray].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0  \plain\f4\fs20\cf2\b &&\plain\f4\fs20\cf0  addSpaces > 0) addSpaces--;
+\par   \plain\f4\fs20\cf1 //Next string
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0 
+\par    \{
+\par     \plain\f4\fs20\cf1 //Start of the string
+\par \plain\f4\fs20\cf0     currentPosition = 0;
+\par     \plain\f4\fs20\cf1 //Maximum spaces
+\par \plain\f4\fs20\cf0     addSpaces = maxSquashSpaces;
+\par     \plain\f4\fs20\cf1 //If there are more strings increment the current one
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (currentArray < outputStrings.\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0  - 1) currentArray++;
+\par     \plain\f4\fs20\cf1 //If there aren't back to the start
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  currentArray = 0;
+\par    \}
+\par 
+\par   \plain\f4\fs20\cf1 //Output the status with the spaces
+\par \plain\f4\fs20\cf0   window.status = (outputStrings[currentArray].substring(0, currentPosition) + repeatString(addToSquashString, addSpaces) + outputStrings[currentArray].substring(currentPosition, currentPosition + 1));
+\par   \plain\f4\fs20\cf1 //If we have completed the current string make the update time large
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (currentPosition == outputStrings[currentArray].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0  - 1 \plain\f4\fs20\cf2\b &&\plain\f4\fs20\cf0  addSpaces == 0) timerHandle = setTimeout('\plain\f4\fs20\cf3 squashText2()\plain\f4\fs20\cf0 ', pauseBetweenStrings);
+\par   \plain\f4\fs20\cf1 //If we haven't make it small
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  timerHandle = setTimeout('\plain\f4\fs20\cf3 squashText2()\plain\f4\fs20\cf0 ', updateInterval);
+\par 
+\par   \plain\f4\fs20\cf2\b return\plain\f4\fs20\cf0  true;
+\par  \}
+\par 
+\par \plain\f4\fs20\cf2\b function\plain\f4\fs20\cf0  slideText()
+\par  \{
+\par   \plain\f4\fs20\cf1 //What appears in the status bar
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  statusText = '';
+\par   \plain\f4\fs20\cf1 //Default update time = small
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  currentUpdateInterval = updateInterval;
+\par   
+\par   \plain\f4\fs20\cf1 //If we can subtract spaces and all the string is visible
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (addSpaces >= 0 \plain\f4\fs20\cf2\b &&\plain\f4\fs20\cf0  currentPosition >= outputStrings[currentArray].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0 ) 
+\par    \{
+\par     \plain\f4\fs20\cf1 //Decremenet the amount of spaces
+\par \plain\f4\fs20\cf0     addSpaces--;
+\par     \plain\f4\fs20\cf1 //Add the specified amount of spaces to the status text
+\par \plain\f4\fs20\cf0     statusText = (repeatString('\plain\f4\fs20\cf3  \plain\f4\fs20\cf0 ', addSpaces) + outputStrings[currentArray]);
+\par     \plain\f4\fs20\cf1 //If we are at the start of the string without any spaces
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (addSpaces == 0 \plain\f4\fs20\cf2\b &&\plain\f4\fs20\cf0  currentPosition == outputStrings[currentArray].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0 ) 
+\par      \{
+\par       \plain\f4\fs20\cf1 //Update time = large
+\par \plain\f4\fs20\cf0       currentUpdateInterval = pauseBetweenStrings;
+\par       \plain\f4\fs20\cf1 //Set currentPosition to 0 so as to go to the next if statement 
+\par \plain\f4\fs20\cf0       currentPosition = 0;
+\par      \}    
+\par    \}
+\par   \plain\f4\fs20\cf1 //If there are spaces to be removed and all the string isn't visible
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (addSpaces > 0 \plain\f4\fs20\cf2\b &&\plain\f4\fs20\cf0  currentPosition < outputStrings[currentArray].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0 )
+\par    \{
+\par     \plain\f4\fs20\cf1 //Increment currentPosition so as to show a bit more 
+\par \plain\f4\fs20\cf0     currentPosition++;
+\par     \plain\f4\fs20\cf1 //Remove some spaces so as the text comes back as well as relevaling more of the text
+\par \plain\f4\fs20\cf0     addSpaces--;
+\par     \plain\f4\fs20\cf1 //Set the text
+\par \plain\f4\fs20\cf0     statusText = (repeatString('\plain\f4\fs20\cf3  \plain\f4\fs20\cf0 ', addSpaces) + outputStrings[currentArray].substring(0, currentPosition));
+\par    \}
+\par   \plain\f4\fs20\cf1 //If we can remove no more spaces - i.e. we are within the text
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (currentPosition < outputStrings[currentArray].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0  - 1)
+\par    \{
+\par     \plain\f4\fs20\cf1 //Increment the current position
+\par \plain\f4\fs20\cf0     currentPosition++;
+\par     \plain\f4\fs20\cf1 //Set the status text to a bit less than the last
+\par \plain\f4\fs20\cf0     statusText = outputStrings[currentArray].substring(currentPosition, outputStrings[currentArray].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0 );
+\par    \}
+\par   \plain\f4\fs20\cf1 //If we are at the end of the text
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  
+\par    \{
+\par     \plain\f4\fs20\cf1 //Set the spaces to the most
+\par \plain\f4\fs20\cf0     addSpaces = maxSlideSpaces;
+\par     currentPosition = 0;
+\par     \plain\f4\fs20\cf1 //If there are more strings increment the current number
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (currentArray < outputStrings.\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0  - 1) currentArray++;
+\par     \plain\f4\fs20\cf1 //If not start again
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  currentArray = 0;
+\par     \plain\f4\fs20\cf1 //Set the status text to nothing
+\par \plain\f4\fs20\cf0     statusText = '';
+\par    \}
+\par 
+\par   \plain\f4\fs20\cf1 //Set the status
+\par \plain\f4\fs20\cf0   window.status = statusText
+\par   \plain\f4\fs20\cf1 //Call this again in the specified time
+\par \plain\f4\fs20\cf0   timerHandle = setTimeout('\plain\f4\fs20\cf3 slideText()\plain\f4\fs20\cf0 ', currentUpdateInterval);
+\par 
+\par   \plain\f4\fs20\cf2\b return\plain\f4\fs20\cf0  true;
+\par  \}
+\par 
+\par \plain\f4\fs20\cf2\b function\plain\f4\fs20\cf0  squashText()
+\par  \{
+\par   \plain\f4\fs20\cf1 //What appears in the status bar
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  statusText = '';
+\par   \plain\f4\fs20\cf1 //Default update time = small
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  currentUpdateInterval = updateInterval;
+\par   \plain\f4\fs20\cf1 //For loops
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  loopCounter;
+\par 
+\par   \plain\f4\fs20\cf1 //Loop for all chars in the current string
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b for\plain\f4\fs20\cf0  (loopCounter = 0; loopCounter < outputStrings[currentArray].length; loopCounter++)
+\par    \{
+\par     \plain\f4\fs20\cf1 //Make the status = the current char + the amount of characters spaces
+\par \plain\f4\fs20\cf0     statusText += (outputStrings[currentArray].substring(loopCounter, loopCounter + 1) + repeatString(addToSquashString, addSpaces));
+\par    \} 
+\par 
+\par   \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (addSpaces == 0) 
+\par    \{
+\par     currentUpdateInterval = pauseBetweenStrings;
+\par     addSpaces = maxSquashSpaces;
+\par     \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (currentArray < outputStrings.\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0  - 1) currentArray++;
+\par     \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  currentArray = 0;
+\par    \}
+\par   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  addSpaces--;
+\par 
+\par   \plain\f4\fs20\cf1 //Set the status
+\par \plain\f4\fs20\cf0   window.status = statusText;
+\par   \plain\f4\fs20\cf1 //Set the timer for this function
+\par \plain\f4\fs20\cf0   timerHandle = setTimeout('\plain\f4\fs20\cf3 squashText()\plain\f4\fs20\cf0 ', currentUpdateInterval);
+\par 
+\par   \plain\f4\fs20\cf2\b return\plain\f4\fs20\cf0  true;
+\par  \}
+\par 
+\par \plain\f4\fs20\cf2\b function\plain\f4\fs20\cf0  incrementText()
+\par  \{
+\par   \plain\f4\fs20\cf1 //What appears in the status bar
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  statusText = '';
+\par 
+\par   \plain\f4\fs20\cf1 //If there is more text to add increment the current position
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (currentPosition < outputStrings[currentArray].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0 ) currentPosition++;
+\par   \plain\f4\fs20\cf1 //If we have used all the text in this array
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0 
+\par    \{
+\par     \plain\f4\fs20\cf1 //If there are more strings
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (currentArray < outputStrings.\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0  - 1) 
+\par      \{
+\par       \plain\f4\fs20\cf1 //Move to next string in the array
+\par \plain\f4\fs20\cf0       currentArray++;
+\par       \plain\f4\fs20\cf1 //Make our current position the start of the string
+\par \plain\f4\fs20\cf0       currentPosition = 0;
+\par      \}
+\par     \plain\f4\fs20\cf1 //If we have used all the strings in the array
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  
+\par      \{
+\par       \plain\f4\fs20\cf1 //Start again
+\par \plain\f4\fs20\cf0       currentArray = 0;
+\par       currentPosition = 0;
+\par      \}
+\par    \}
+\par 
+\par   \plain\f4\fs20\cf1 //Get the status text
+\par \plain\f4\fs20\cf0   statusText = outputStrings[currentArray].substring(0, currentPosition);
+\par   \plain\f4\fs20\cf1 //If there is more text to come add the addToString to the end
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (currentPosition < outputStrings[currentArray].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0 ) statusText += addToIncrementString;
+\par   \plain\f4\fs20\cf1 //Set the current string
+\par \plain\f4\fs20\cf0   window.status = statusText;
+\par 
+\par   \plain\f4\fs20\cf1 //If there is more text to add set the timeout to the short length
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (currentPosition < outputStrings[currentArray].\plain\f4\fs20\cf2\b length\plain\f4\fs20\cf0 ) timerHandle = setTimeout('\plain\f4\fs20\cf3 incrementText()\plain\f4\fs20\cf0 ', updateInterval);
+\par   \plain\f4\fs20\cf1 //If the next one is the start of the next string in the array set the timeout to the long length
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b else\plain\f4\fs20\cf0  timerHandle = setTimeout('\plain\f4\fs20\cf3 incrementText()\plain\f4\fs20\cf0 ', pauseBetweenStrings);
+\par 
+\par   \plain\f4\fs20\cf2\b return\plain\f4\fs20\cf0  true;
+\par  \}
+\par 
+\par \plain\f4\fs20\cf1 //Stops the status bar scrolling
+\par \plain\f4\fs20\cf2\b function\plain\f4\fs20\cf0  stopUpdates()
+\par  \{
+\par   \plain\f4\fs20\cf1 //If there is a timer
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b if\plain\f4\fs20\cf0  (timerHandle \plain\f4\fs20\cf2\b !=\plain\f4\fs20\cf0  null) 
+\par    \{
+\par     \plain\f4\fs20\cf1 //Stop it
+\par \plain\f4\fs20\cf0     clearTimeout(timerHandle);
+\par     \plain\f4\fs20\cf1 //Set the var to no timer
+\par \plain\f4\fs20\cf0     timerHandle = null;
+\par    \}
+\par 
+\par   \plain\f4\fs20\cf2\b return\plain\f4\fs20\cf0  true;
+\par  \}
+\par 
+\par \plain\f4\fs20\cf1 //Returns a string that has the specified repeated the amount of time specified 
+\par \plain\f4\fs20\cf2\b function\plain\f4\fs20\cf0  repeatString(stringToRepeat, timesToRepeat)
+\par  \{
+\par   \plain\f4\fs20\cf1 //The modified string to return
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  returnString = '';
+\par   \plain\f4\fs20\cf1 //For loops
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b var\plain\f4\fs20\cf0  loopCounter;
+\par   \plain\f4\fs20\cf1 //Loop for amount wanted
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b for\plain\f4\fs20\cf0  (loopCounter = 1; loopCounter <= timesToRepeat; loopCounter++)
+\par    \{
+\par     \plain\f4\fs20\cf1 //Add it to the returnString
+\par \plain\f4\fs20\cf0     returnString += stringToRepeat;
+\par    \}
+\par 
+\par   \plain\f4\fs20\cf1 //Return the modified string
+\par \plain\f4\fs20\cf0   \plain\f4\fs20\cf2\b return\plain\f4\fs20\cf0  returnString;
+\par  \}\plain\f8\fs20\cf0 
+\par }
+ 

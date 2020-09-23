@@ -1,0 +1,291 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang2057{\fonttbl{\f0\fnil\fcharset0 Verdana;}{\f1\fnil\fcharset0 Courier New;}{\f2\fnil\fcharset0 Tahoma;}}
+{\colortbl ;\red0\green0\blue128;\red0\green0\blue0;\red0\green128\blue0;}
+\viewkind4\uc1\pard\ul\b\f0\fs20 Multiple Undos\ulnone\b0 
+\par 
+\par This module allows you to perform multiple undos. It isn't very effecient but it does basically what it's supposed to. Remember to put this in a MODULE:
+\par 
+\par \pard\li300\cf1\f1 Public\cf2  \cf1 Type\cf2  UndoInfo \cf3 'Type for the undo info
+\par \cf2     SelStart \cf1 As\cf2  \cf1 Long\cf2  \cf3 'Start of selection
+\par \cf2     SelLength \cf1 As\cf2  \cf1 Long\cf2  \cf3 'Length of selection
+\par \cf2     Text \cf1 As\cf2  \cf1 String\cf2  \cf3 'The text
+\par \cf1 End\cf2  \cf1 Type\cf2  \cf3 
+\par \pard 
+\par \pard\cf0\f0 Then in the form you want to use it in you need to put in the declarations sections something like:
+\par 
+\par \pard\li300\cf1\f1 Private\cf2  Undo \cf1 As\cf2  \cf1 New\cf2  clsUndo\cf0\f0 
+\par \pard 
+\par Then for the text box's change event you need some code like this:
+\par 
+\par \pard\li300\cf1\f1 With\cf2  Text1
+\par     \cf3 'Add this text to the undo buffer
+\par \cf2     \cf1 Call\cf2  Undo.AddToBuffer(.TextRTF, .SelStart, .SelLength)
+\par \cf1 End\cf2  \cf1 With\cf2 
+\par \pard\cf0\f0 
+\par And finally to undo you need some code like this:
+\par 
+\par \pard\li300\cf1\f1 Private\cf2  \cf1 Sub\cf2  mnuEditUndo_Click()
+\par     \cf3 'If we have Undos left
+\par \cf2     \cf1 If\cf2  Undo.CanUndo \cf1 Then\cf2 
+\par         \cf3 'Start undo
+\par \cf2         Undo.Undoing = True
+\par         \cf3 'Get the undo info
+\par \cf2         \cf1 Dim\cf2  udiInfo \cf1 As\cf2  UndoInfo
+\par         udiInfo = Undo.GetUndo
+\par         \cf3 'Set it to the text box
+\par \cf2         .TextRTF = udiInfo.Text
+\par         .SelStart = udiInfo.SelStart
+\par         .SelLength = udiInfo.SelLength
+\par         \cf3 'End undo
+\par \cf2         Undo.Undoing = False
+\par         \cf3 'If we don't
+\par \cf2     \cf1 Else\cf2 
+\par         \cf3 'Beep to indicate no more left
+\par \cf2         Beep
+\par     \cf1 End\cf2  \cf1 If\cf2 
+\par \cf1 End\cf2  \cf1 Sub
+\par \cf2 
+\par \cf1 Private\cf2  \cf1 Sub\cf2  mnuEditRedo_Click()
+\par     \cf3 'If we have Undos left
+\par \cf2     \cf1 If\cf2  Undo.CanRedo \cf1 Then\cf2 
+\par         \cf3 'Start undo
+\par \cf2         Undo.Undoing = True
+\par         \cf3 'Get the undo info
+\par \cf2         \cf1 Dim\cf2  udiInfo \cf1 As\cf2  UndoInfo
+\par         udiInfo = Undo.GetRedo
+\par         \cf3 'Set it to the text box
+\par \cf2         .TextRTF = udiInfo.Text
+\par         .SelStart = udiInfo.SelStart
+\par         .SelLength = udiInfo.SelLength
+\par         \cf3 'End undo
+\par \cf2         Undo.Undoing = False
+\par         \cf3 'If we don't
+\par \cf2     \cf1 Else\cf2 
+\par         \cf3 'Beep to indicate no more left
+\par \cf2         Beep
+\par     \cf1 End\cf2  \cf1 If\cf2 
+\par \cf1 End\cf2  \cf1 Sub\cf2 
+\par \pard\cf0\f0 
+\par 
+\par And here is the class module, which should be named "\cf2 clsUndo":\cf0 
+\par \pard\fs17 
+\par \pard\cf1\f1\fs20 Option\cf2  \cf1 Explicit\cf2 
+\par \cf3 'PUT THIS IN A MODULE:
+\par 'Public Type UndoInfo 'Type for the undo info
+\par '    SelStart As Long 'Start of selection
+\par '    SelLength As Long 'Length of selection
+\par '    Text As String 'The text
+\par 'End Type
+\par \cf1 Private\cf2  intUndoUbound \cf1 As\cf2  \cf1 Integer\cf2  \cf3 'The upper bound of the udiUndo array
+\par \cf1 Private\cf2  udiUndo() \cf1 As\cf2  UndoInfo \cf3 'Holds the undo info
+\par \cf1 Private\cf2  intRedoUbound \cf1 As\cf2  \cf1 Integer\cf2  \cf3 'The upper bound of the udiRedo array
+\par \cf1 Private\cf2  udiRedo() \cf1 As\cf2  UndoInfo \cf3 'Holds the redo info
+\par \cf1 Private\cf2  bolUndoing \cf1 As\cf2  \cf1 Boolean\cf2  \cf3 'Whether the calling module is undoing
+\par \cf1 Private\cf2  intMaxUndos \cf1 As\cf2  \cf1 Integer\cf2  \cf3 'How many undos to store
+\par \cf2 
+\par Friend \cf1 Sub\cf2  AddToBuffer(\cf1 ByVal\cf2  Text \cf1 As\cf2  \cf1 String\cf2 , \cf1 ByVal\cf2  SelStart \cf1 As\cf2  \cf1 String\cf2 , _
+\par     \cf1 ByVal\cf2  SelLength \cf1 As\cf2  \cf1 String\cf2 )
+\par     \cf1 On\cf2  \cf1 Local\cf2  \cf1 Error\cf2  \cf1 Resume\cf2  \cf1 Next\cf2 
+\par     \cf3 'Exit if we are undoing
+\par \cf2     \cf1 If\cf2  bolUndoing \cf1 Then\cf2  \cf1 Exit\cf2  \cf1 Sub\cf2 
+\par     \cf3 'If the Undo buffer is unitialised
+\par \cf2     \cf1 If\cf2  intUndoUbound <= -1 \cf1 Then\cf2 
+\par         \cf3 'Initialise it
+\par \cf2         intUndoUbound = 0
+\par         \cf1 ReDim\cf2  udiUndo(0 To intUndoUbound)
+\par     \cf3 'If it already has some details
+\par \cf2     \cf1 Else\cf2 
+\par         \cf3 'Get the top array number + 1
+\par \cf2         \cf1 If\cf2  intUndoUbound < intMaxUndos \cf1 Then\cf2  intUndoUbound = intUndoUbound + 1
+\par         \cf3 'Add a new array
+\par \cf2         \cf1 ReDim\cf2  Preserve udiUndo(0 To intUndoUbound)
+\par         \cf3 'Loop backwards for all arrays minus the first
+\par \cf2         \cf1 Dim\cf2  intLoopCounter \cf1 As\cf2  \cf1 Integer\cf2 
+\par         \cf1 For\cf2  intLoopCounter = intUndoUbound To 1 Step -1
+\par             \cf3 'Make this one = the last one (i.e. move them all down one
+\par \cf2             \cf1 With\cf2  udiUndo(intLoopCounter)
+\par                 .SelLength = udiUndo(intLoopCounter - 1).SelLength
+\par                 .SelStart = udiUndo(intLoopCounter - 1).SelStart
+\par                 .Text = udiUndo(intLoopCounter - 1).Text
+\par             \cf1 End\cf2  \cf1 With\cf2 
+\par         \cf1 Next\cf2  intLoopCounter
+\par     \cf1 End\cf2  \cf1 If\cf2 
+\par     \cf3 'Add the new one to the top
+\par \cf2     \cf1 With\cf2  udiUndo(0)
+\par         .SelLength = SelLength
+\par         .SelStart = SelStart
+\par         .Text = Text
+\par     \cf1 End\cf2  \cf1 With\cf2 
+\par     \cf3 'Kill the old Redos
+\par \cf2     \cf1 Erase\cf2  udiRedo
+\par     intRedoUbound = -1
+\par \cf1 End\cf2  \cf1 Sub\cf2 
+\par 
+\par Friend \cf1 Function\cf2  GetUndo() \cf1 As\cf2  UndoInfo
+\par     \cf1 On\cf2  \cf1 Local\cf2  \cf1 Error\cf2  \cf1 Resume\cf2  \cf1 Next\cf2 
+\par     \cf3 'Return the first undo in the array
+\par \cf2     \cf1 With\cf2  GetUndo
+\par         .SelLength = udiUndo(0).SelLength
+\par         .SelStart = udiUndo(0).SelStart
+\par         .Text = udiUndo(0).Text
+\par     \cf1 End\cf2  \cf1 With\cf2 
+\par     \cf3 'Take one off of the undo's ubound
+\par \cf2     intUndoUbound = intUndoUbound - 1
+\par     \cf3 'If we can shuffle the array
+\par \cf2     \cf1 If\cf2  intUndoUbound > -1 \cf1 Then\cf2 
+\par         \cf3 'Loop for all the undos (minus the last as we are going to kill it)
+\par \cf2         \cf1 Dim\cf2  intLoopCounter \cf1 As\cf2  \cf1 Integer\cf2 
+\par         \cf1 For\cf2  intLoopCounter = 0 To intUndoUbound
+\par             \cf3 'Make this one = the next one, i.e. move them all back one
+\par \cf2             \cf1 With\cf2  udiUndo(intLoopCounter)
+\par                 .SelLength = udiUndo(intLoopCounter + 1).SelLength
+\par                 .SelStart = udiUndo(intLoopCounter + 1).SelStart
+\par                 .Text = udiUndo(intLoopCounter + 1).Text
+\par             \cf1 End\cf2  \cf1 With\cf2 
+\par         \cf1 Next\cf2  intLoopCounter
+\par         \cf3 'Remove the last undo as it has the same as the previous one in it
+\par \cf2         \cf1 ReDim\cf2  Preserve udiUndo(0 To intUndoUbound)
+\par     
+\par     \cf3 'No more undos
+\par \cf2     \cf1 Else\cf2 
+\par         \cf3 'Kill the undo buffer
+\par \cf2         \cf1 Erase\cf2  udiUndo
+\par     \cf1 End\cf2  \cf1 If\cf2 
+\par     
+\par     \cf3 'Add a new space to the redo buffer
+\par \cf2     intRedoUbound = intRedoUbound + 1
+\par     \cf1 ReDim\cf2  Preserve udiRedo(0 To intRedoUbound)
+\par     \cf3 'Loop backwards for all but the first buffers
+\par \cf2     \cf1 For\cf2  intLoopCounter = intRedoUbound To 1 Step -1
+\par         \cf3 'Male this one = the last one, i.e. move them all forward one place
+\par \cf2         \cf1 With\cf2  udiRedo(intLoopCounter)
+\par             .SelLength = udiRedo(intLoopCounter - 1).SelLength
+\par             .SelStart = udiRedo(intLoopCounter - 1).SelStart
+\par             .Text = udiRedo(intLoopCounter - 1).Text
+\par         \cf1 End\cf2  \cf1 With\cf2 
+\par     \cf1 Next\cf2  intLoopCounter
+\par     \cf3 'Add this undo to the first redo
+\par \cf2     \cf1 With\cf2  udiRedo(0)
+\par         .SelLength = GetUndo.SelLength
+\par         .SelStart = GetUndo.SelStart
+\par         .Text = GetUndo.Text
+\par     \cf1 End\cf2  \cf1 With\cf2 
+\par \cf1 End\cf2  \cf1 Function\cf2 
+\par 
+\par Friend \cf1 Function\cf2  GetRedo(\cf1 Optional\cf2  \cf1 ByVal\cf2  \cf3 RemoveFromBuffer As Boolean = True) As UndoInfo
+\par \cf2     \cf1 On\cf2  \cf1 Local\cf2  \cf1 Error\cf2  \cf1 Resume\cf2  \cf1 Next\cf2 
+\par     \cf3 'Return the first redo in the array
+\par \cf2     \cf1 With\cf2  GetRedo
+\par         .SelLength = udiRedo(0).SelLength
+\par         .SelStart = udiRedo(0).SelStart
+\par         .Text = udiRedo(0).Text
+\par     
+\par         \cf3 'Remove this from the buffer is wanted
+\par \cf2         \cf1 If\cf2  \cf3 RemoveFromBuffer Then
+\par \cf2             \cf3 'Make undo array one bigger
+\par \cf2             intUndoUbound = intUndoUbound + 1
+\par             \cf1 ReDim\cf2  Preserve udiUndo(0 To intUndoUbound)
+\par             
+\par             \cf3 'Loop backwards for all all undos minus the first
+\par \cf2             \cf1 Dim\cf2  intLoopCounter \cf1 As\cf2  \cf1 Integer\cf2 
+\par             \cf1 For\cf2  intLoopCounter = intUndoUbound To 1 Step -1
+\par                 \cf3 'Make this one = the last one, i.e. move the all down one place
+\par \cf2                 \cf1 With\cf2  udiUndo(intLoopCounter)
+\par                     .SelLength = udiUndo(intLoopCounter - 1).SelLength
+\par                     .SelStart = udiUndo(intLoopCounter - 1).SelStart
+\par                     .Text = udiUndo(intLoopCounter - 1).Text
+\par                 \cf1 End\cf2  \cf1 With\cf2 
+\par             \cf1 Next\cf2  intLoopCounter
+\par             \cf3 'Make the first undo array = the redo returned
+\par \cf2             \cf1 With\cf2  udiUndo(0)
+\par                 .SelLength = GetRedo.SelLength
+\par                 .SelStart = GetRedo.SelStart
+\par                 .Text = GetRedo.Text
+\par             \cf1 End\cf2  \cf1 With\cf2 
+\par             
+\par             \cf3 'Redo array is one smaller
+\par \cf2             intRedoUbound = intRedoUbound - 1
+\par             \cf3 'If we can shuffle arrays
+\par \cf2             \cf1 If\cf2  intRedoUbound > -1 \cf1 Then\cf2 
+\par                 \cf3 'Loop for all redos
+\par \cf2                 \cf1 For\cf2  intLoopCounter = 0 To intRedoUbound
+\par                         \cf3 'Move this one = the next one, i.e. move all back one
+\par \cf2                         \cf1 With\cf2  udiRedo(intLoopCounter)
+\par                             .SelLength = udiRedo(intLoopCounter + 1).SelLength
+\par                             .SelStart = udiRedo(intLoopCounter + 1).SelStart
+\par                             .Text = udiRedo(intLoopCounter + 1).Text
+\par                         \cf1 End\cf2  \cf1 With\cf2 
+\par                     \cf1 Next\cf2  intLoopCounter
+\par                 \cf3 'Remove the last array
+\par \cf2                 \cf1 ReDim\cf2  Preserve udiRedo(0 To intRedoUbound)
+\par             
+\par             \cf3 'If we have no more redos left
+\par \cf2             \cf1 Else\cf2 
+\par                 \cf3 'Kill the redo array
+\par \cf2                 \cf1 Erase\cf2  udiRedo
+\par             \cf1 End\cf2  \cf1 If\cf2 
+\par         \cf1 End\cf2  \cf1 If\cf2 
+\par     \cf1 End\cf2  \cf1 With\cf2 
+\par \cf1 End\cf2  \cf1 Function\cf2 
+\par 
+\par Friend \cf1 Sub\cf2  Reset()
+\par     \cf1 On\cf2  \cf1 Local\cf2  \cf1 Error\cf2  \cf1 Resume\cf2  \cf1 Next\cf2 
+\par     \cf3 'Kill the Undo/Redo arrays
+\par \cf2     intUndoUbound = -1
+\par     \cf1 Erase\cf2  udiUndo
+\par     intRedoUbound = -1
+\par     \cf1 Erase\cf2  udiRedo
+\par \cf1 End\cf2  \cf1 Sub\cf2 
+\par 
+\par \cf1 Private\cf2  \cf1 Sub\cf2  Class_Initialize()
+\par     \cf1 On\cf2  \cf1 Local\cf2  \cf1 Error\cf2  \cf1 Resume\cf2  \cf1 Next\cf2 
+\par     \cf3 'User not undoing, up to the programmer to use if they want
+\par \cf2     bolUndoing = False
+\par     \cf3 'Initial ubound = uninitialised
+\par \cf2     intUndoUbound = -1
+\par     intRedoUbound = -1
+\par     \cf3 'Default Max undos = 99
+\par \cf2     intMaxUndos = 99
+\par \cf1 End\cf2  \cf1 Sub\cf2 
+\par 
+\par Friend \cf1 Function\cf2  CanUndo() \cf1 As\cf2  \cf1 Boolean\cf2 
+\par     \cf1 On\cf2  \cf1 Local\cf2  \cf1 Error\cf2  \cf1 Resume\cf2  \cf1 Next\cf2 
+\par     \cf3 'Return whether we can undo
+\par \cf2     CanUndo = intUndoUbound >= (0)
+\par \cf1 End\cf2  \cf1 Function\cf2 
+\par 
+\par Friend \cf1 Function\cf2  CanRedo() \cf1 As\cf2  \cf1 Boolean\cf2 
+\par     \cf1 On\cf2  \cf1 Local\cf2  \cf1 Error\cf2  \cf1 Resume\cf2  \cf1 Next\cf2 
+\par     \cf3 'Return whether we can undo
+\par \cf2     CanRedo = intRedoUbound >= (0)
+\par \cf1 End\cf2  \cf1 Function\cf2 
+\par 
+\par \cf1 Public\cf2  \cf1 Property\cf2  \cf1 Get\cf2  Undoing() \cf1 As\cf2  \cf1 Boolean\cf2 
+\par     \cf1 On\cf2  \cf1 Local\cf2  \cf1 Error\cf2  \cf1 Resume\cf2  \cf1 Next\cf2 
+\par     \cf3 'Return whether we are in the middle of undoing, so don't add to buffer
+\par \cf2     Undoing = bolUndoing
+\par \cf1 End\cf2  \cf1 Property\cf2 
+\par 
+\par \cf1 Public\cf2  \cf1 Property\cf2  \cf1 Let\cf2  Undoing(\cf1 ByVal\cf2  \cf1 New\cf2 _Undoing \cf1 As\cf2  \cf1 Boolean\cf2 )
+\par     \cf1 On\cf2  \cf1 Local\cf2  \cf1 Error\cf2  \cf1 Resume\cf2  \cf1 Next\cf2 
+\par     \cf3 'Set the new undoing
+\par \cf2     bolUndoing = \cf1 New\cf2 _Undoing
+\par \cf1 End\cf2  \cf1 Property\cf2 
+\par 
+\par \cf1 Public\cf2  \cf1 Property\cf2  \cf1 Get\cf2  MaxUndos() \cf1 As\cf2  \cf1 Integer\cf2 
+\par     \cf1 On\cf2  \cf1 Local\cf2  \cf1 Error\cf2  \cf1 Resume\cf2  \cf1 Next\cf2 
+\par     \cf3 'Return how many undos we can perform
+\par \cf2     MaxUndos = intMaxUndos
+\par \cf1 End\cf2  \cf1 Property\cf2 
+\par 
+\par \cf1 Public\cf2  \cf1 Property\cf2  \cf1 Let\cf2  MaxUndos(\cf1 ByVal\cf2  \cf1 New\cf2 _MaxUndos \cf1 As\cf2  \cf1 Integer\cf2 )
+\par     \cf1 On\cf2  \cf1 Local\cf2  \cf1 Error\cf2  \cf1 Resume\cf2  \cf1 Next\cf2 
+\par     \cf3 'Set how many undos we can perform
+\par \cf2     intMaxUndos = \cf1 New\cf2 _MaxUndos
+\par     \cf3 'Delete the top arrays if too many
+\par \cf2     \cf1 If\cf2  \cf1 UBound\cf2 (udiRedo) > \cf1 New\cf2 _MaxUndos \cf1 Then\cf2  \cf1 ReDim\cf2  udiRedo(0 To \cf1 New\cf2 _MaxUndos)
+\par     \cf1 If\cf2  \cf1 UBound\cf2 (udiUndo) > \cf1 New\cf2 _MaxUndos \cf1 Then\cf2  \cf1 ReDim\cf2  udiUndo(0 To \cf1 New\cf2 _MaxUndos)
+\par \cf1 End\cf2  \cf1 Property\cf2 
+\par  \cf0\f2\fs17 
+\par \pard 
+\par }
+ 

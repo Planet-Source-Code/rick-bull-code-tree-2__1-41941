@@ -1,0 +1,52 @@
+{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\fswiss\fprq2 Courier New;}{\f3\fswiss Tahoma;}{\f4\fswiss\fprq2 Verdana;}{\f5\fswiss\fprq2 System;}{\f6\fswiss Courier New;}{\f7\fswiss\fprq2 Tahoma;}}
+{\colortbl\red0\green0\blue0;\red0\green0\blue128;\red0\green128\blue0;\red128\green0\blue128;}
+\deflang2057\pard\plain\f4\fs20\b\ul Print Screen Function\plain\f4\fs20 
+\par 
+\par This procedure allows you to take a picture of the screen including the cursor if wanted (Note the cursor will not be correct if a custom cursor is used, i.e. it only works properly if it is a system cursor): 
+\par 
+\par \pard\li300\plain\f2\fs20\cf1 Private\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Declare\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Function\plain\f2\fs20\cf0  GetDC Lib "\plain\f2\fs20\cf3 user32\plain\f2\fs20\cf0 " (\plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  hwnd \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 ) \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 
+\par \plain\f2\fs20\cf1 Private\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Declare\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Function\plain\f2\fs20\cf0  ReleaseDC Lib "\plain\f2\fs20\cf3 user32\plain\f2\fs20\cf0 " (\plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  hwnd \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  hdc \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 ) \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 
+\par \plain\f2\fs20\cf1 Private\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Declare\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Function\plain\f2\fs20\cf0  GetDesktopWindow Lib "\plain\f2\fs20\cf3 user32\plain\f2\fs20\cf0 " () \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 
+\par \plain\f2\fs20\cf1 Private\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Declare\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Function\plain\f2\fs20\cf0  BitBlt Lib "\plain\f2\fs20\cf3 gdi32\plain\f2\fs20\cf0 " (\plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  hDestDC \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  x \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  y \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  nWidth \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  nHeight \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  hSrcDC \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  xSrc \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  ySrc \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  dwRop \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 ) \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 
+\par \plain\f2\fs20\cf1 Private\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Declare\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Function\plain\f2\fs20\cf0  GetCursor Lib "\plain\f2\fs20\cf3 user32\plain\f2\fs20\cf0 " () \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 
+\par \plain\f2\fs20\cf1 Private\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Declare\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Function\plain\f2\fs20\cf0  DrawIcon Lib "\plain\f2\fs20\cf3 user32\plain\f2\fs20\cf0 " (\plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  hdc \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  x \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  y \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 ByVal\plain\f2\fs20\cf0  hIcon \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 ) \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 
+\par \plain\f2\fs20\cf1 Private\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Declare\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Function\plain\f2\fs20\cf0  GetCursorPos Lib "\plain\f2\fs20\cf3 user32\plain\f2\fs20\cf0 " (lpPoint \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  POINTAPI) \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 
+\par \plain\f2\fs20\cf1 Private\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Type\plain\f2\fs20\cf0  POINTAPI
+\par     x \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 
+\par     y \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 
+\par \plain\f2\fs20\cf1 End\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Type\plain\f2\fs20\cf0 
+\par \plain\f2\fs20\cf1 Public\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Sub\plain\f2\fs20\cf0  PrintScreen(DestinationhDC \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , \plain\f2\fs20\cf1 Optional\plain\f2\fs20\cf0  DrawCursor \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Boolean\plain\f2\fs20\cf0  = False)
+\par     \plain\f2\fs20\cf1 On\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Local\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Error\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Resume\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Next\plain\f2\fs20\cf0 
+\par     
+\par     \plain\f2\fs20\cf2 'Get the desktop hWnd and hDC
+\par \plain\f2\fs20\cf0     \plain\f2\fs20\cf1 Dim\plain\f2\fs20\cf0  DesktophWnd \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 , DesktophDC \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Long\plain\f2\fs20\cf0 
+\par     DesktophWnd = GetDesktopWindow
+\par     DesktophDC = GetDC(DesktophWnd)
+\par     \plain\f2\fs20\cf2 'Draw the screen
+\par \plain\f2\fs20\cf0     \plain\f2\fs20\cf1 Call\plain\f2\fs20\cf0  BitBlt(DestinationhDC, 0, 0, Screen.Width / Screen.TwipsPerPixelX, _
+\par         Screen.Height / Screen.TwipsPerPixelY, DesktophDC, 0, 0, vbSrcCopy)
+\par     \plain\f2\fs20\cf2 'Release desktop hDC
+\par \plain\f2\fs20\cf0     \plain\f2\fs20\cf1 Call\plain\f2\fs20\cf0  ReleaseDC(DesktophWnd, DesktophDC)
+\par     \plain\f2\fs20\cf2 'If the cursor is wanted
+\par \plain\f2\fs20\cf0     \plain\f2\fs20\cf1 If\plain\f2\fs20\cf0  DrawCursor \plain\f2\fs20\cf1 Then\plain\f2\fs20\cf0 
+\par         \plain\f2\fs20\cf2 'Get the cursor's XY co-ordinates
+\par \plain\f2\fs20\cf0         \plain\f2\fs20\cf1 Dim\plain\f2\fs20\cf0  CursorPos \plain\f2\fs20\cf1 As\plain\f2\fs20\cf0  POINTAPI
+\par         \plain\f2\fs20\cf1 Call\plain\f2\fs20\cf0  GetCursorPos(CursorPos)
+\par         \plain\f2\fs20\cf2 'Draw it as well
+\par \plain\f2\fs20\cf0         \plain\f2\fs20\cf1 Call\plain\f2\fs20\cf0  DrawIcon(Me.hdc, CursorPos.x, CursorPos.y, GetCursor)
+\par     \plain\f2\fs20\cf1 End\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 If\plain\f2\fs20\cf0 
+\par \plain\f2\fs20\cf1 End\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Sub\plain\f2\fs20\cf0 
+\par \pard\plain\f7\fs20\cf0 
+\par 
+\par Then you could do something like:
+\par 
+\par \pard\li300\plain\f2\fs20\cf1 Private\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Sub\plain\f2\fs20\cf0  Command1_Click()
+\par     \plain\f2\fs20\cf2 'Clear previous print screens
+\par \plain\f2\fs20\cf0     Me.Cls
+\par     \plain\f2\fs20\cf1 If\plain\f2\fs20\cf0  Me.AutoRedraw \plain\f2\fs20\cf1 Then\plain\f2\fs20\cf0  Me.Refresh
+\par     \plain\f2\fs20\cf2 'Capture the current one (including the cursor - remove ', True' to do without)
+\par \plain\f2\fs20\cf0     \plain\f2\fs20\cf1 Call\plain\f2\fs20\cf0  PrintScreen(Me.hdc, True)
+\par     \plain\f2\fs20\cf1 If\plain\f2\fs20\cf0  Me.AutoRedraw \plain\f2\fs20\cf1 Then\plain\f2\fs20\cf0  Me.Refresh
+\par \plain\f2\fs20\cf1 End\plain\f2\fs20\cf0  \plain\f2\fs20\cf1 Sub\plain\f3\fs17\cf1 
+\par }
+ 

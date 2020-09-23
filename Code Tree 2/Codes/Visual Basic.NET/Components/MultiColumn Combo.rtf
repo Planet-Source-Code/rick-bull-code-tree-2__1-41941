@@ -1,0 +1,355 @@
+{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fswiss MS Sans Serif;}{\f1\froman\fcharset2 Symbol;}{\f2\fswiss Verdana;}{\f3\fswiss Tahoma;}{\f4\fmodern\fprq1 Courier New;}{\f5\fswiss Courier New;}{\f6\fswiss Verdana;}{\f7\fswiss\fprq1 Verdana;}{\f8\fswiss\fprq2 System;}{\f9\fswiss Tahoma;}}
+{\colortbl\red0\green0\blue0;\red0\green0\blue255;\red0\green128\blue0;}
+\deflang1033\pard\plain\f2\fs20\b\ul MultiColumn ComboBox\plain\f2\fs20 
+\par 
+\par Here an extender class to make a combobox have more than one column, supports icons as well.  It can replace a normal combo at runtime so you can still use a normal combo during designtime (see below for syntax):
+\par 
+\par \pard\li300\plain\f4\fs20\cf1 Imports\plain\f4\fs20\cf0  System.ComponentModel
+\par \plain\f4\fs20\cf1 Imports\plain\f4\fs20\cf0  System.Drawing
+\par 
+\par \plain\f4\fs20\cf2 'for updated versions or if you have any bug fixes go to http://www.edneeis.com
+\par \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Class\plain\f4\fs20\cf0  MultiComboBox
+\par     \plain\f4\fs20\cf1 Inherits\plain\f4\fs20\cf0  ComboBox
+\par 
+\par     \plain\f4\fs20\cf2 'internal members for added properties
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Private\plain\f4\fs20\cf0  _imageList \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  ImageList
+\par     \plain\f4\fs20\cf1 Private\plain\f4\fs20\cf0  _imageindexmember \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Private\plain\f4\fs20\cf0  _columns \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0  ColumnCollection()
+\par     \plain\f4\fs20\cf1 Private\plain\f4\fs20\cf0  _showColumns \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Boolean\plain\f4\fs20\cf0  = \plain\f4\fs20\cf1 False
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Private\plain\f4\fs20\cf0  _showColumnHeaders \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Boolean\plain\f4\fs20\cf0  = \plain\f4\fs20\cf1 False
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2 'imagelist to get the images from
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property\plain\f4\fs20\cf0  ImageList() \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  ImageList
+\par         \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _imageList
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Set\plain\f4\fs20\cf0 (\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  value \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  ImageList)
+\par             _imageList = value
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Set
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2 'property of the item object that holds the imageindex
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property\plain\f4\fs20\cf0  ImageIndexMember() \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _imageindexmember
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Set\plain\f4\fs20\cf0 (\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  value \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 )
+\par             _imageindexmember = value
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Set
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2 'holds the collection of column info
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 ReadOnly\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property\plain\f4\fs20\cf0  Columns() \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  ColumnCollection
+\par         \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _columns
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2 'if false then defaults to normal or image combo regardless of columns collection
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property\plain\f4\fs20\cf0  ShowColumns() \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Boolean
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _showColumns
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Set\plain\f4\fs20\cf0 (\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  value \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Boolean\plain\f4\fs20\cf0 )
+\par             _showColumns = value
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Set
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2 'not yet implemented
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property\plain\f4\fs20\cf0  ShowColumnHeader() \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Boolean
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _showColumnHeaders
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Set\plain\f4\fs20\cf0 (\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  value \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Boolean\plain\f4\fs20\cf0 )
+\par             _showColumnHeaders = value
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Set
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Protected\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Overrides\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f4\fs20\cf0  OnDrawItem(\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  ea \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  DrawItemEventArgs)
+\par         \plain\f4\fs20\cf2 'this replaces the normal drawing of the dropdown list
+\par \plain\f4\fs20\cf0         ea.DrawBackground()
+\par         ea.DrawFocusRectangle()
+\par 
+\par         \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  iwidth \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer\plain\f4\fs20\cf0  = 0
+\par 
+\par         \plain\f4\fs20\cf2 'handle image
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Try
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  imageindex \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer\plain\f4\fs20\cf0  = -1
+\par             \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  imageSize \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Size = ImageList.ImageSize
+\par             imageindex = Items(ea.Index).GetType.GetProperty(\plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .ImageIndexMember).GetValue(Items(ea.Index), \plain\f4\fs20\cf1 Nothing\plain\f4\fs20\cf0 )
+\par             ImageList.Draw(ea.Graphics, ea.Bounds.Left, ea.Bounds.Top, imageindex)
+\par             iwidth = imageSize.Width
+\par         \plain\f4\fs20\cf1 Catch\plain\f4\fs20\cf0  exi \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Exception
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Try
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'handle regular drawing
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Try
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 If\plain\f4\fs20\cf0  ea.Index <> -1 \plain\f4\fs20\cf1 Then
+\par \plain\f4\fs20\cf0                 \plain\f4\fs20\cf2 'handle columns
+\par \plain\f4\fs20\cf0                 \plain\f4\fs20\cf1 If\plain\f4\fs20\cf0  _showColumns \plain\f4\fs20\cf1 Then
+\par \plain\f4\fs20\cf0                     \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  col \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Column
+\par                     \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  cnt \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer
+\par \plain\f4\fs20\cf0                     \plain\f4\fs20\cf1 For\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Each\plain\f4\fs20\cf0  col \plain\f4\fs20\cf1 In\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Columns
+\par                         cnt += 1
+\par 
+\par                         \plain\f4\fs20\cf1 Static\plain\f4\fs20\cf0  prevWidth \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer
+\par \plain\f4\fs20\cf0                         \plain\f4\fs20\cf1 If\plain\f4\fs20\cf0  cnt = 1 \plain\f4\fs20\cf1 Then\plain\f4\fs20\cf0  prevWidth = ea.Bounds.X
+\par                         \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  useX \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer\plain\f4\fs20\cf0  = ea.Bounds.X + col.Width
+\par                         \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  useY \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer\plain\f4\fs20\cf0  = ea.Bounds.Y + ea.Bounds.Height
+\par                         \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  display \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String
+\par \plain\f4\fs20\cf0                         \plain\f4\fs20\cf2 'get the text from the bound object by property name in the columnmember
+\par \plain\f4\fs20\cf0                         \plain\f4\fs20\cf1 Try
+\par \plain\f4\fs20\cf0                             \plain\f4\fs20\cf1 If\plain\f4\fs20\cf0  Items(ea.Index).GetType \plain\f4\fs20\cf1 Is\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 GetType\plain\f4\fs20\cf0 (Data.DataRowView) \plain\f4\fs20\cf1 Then
+\par \plain\f4\fs20\cf0                                 \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  d \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Data.DataRowView = \plain\f4\fs20\cf1 CType\plain\f4\fs20\cf0 (Items(ea.Index), Data.DataRowView)
+\par                                 display = \plain\f4\fs20\cf1 CType\plain\f4\fs20\cf0 (d.Item(col.ColumnMember), \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 )
+\par                             \plain\f4\fs20\cf1 Else
+\par \plain\f4\fs20\cf0                                 display = \plain\f4\fs20\cf1 CType\plain\f4\fs20\cf0 (Items(ea.Index).GetType.GetProperty(col.ColumnMember).GetValue(Items(ea.Index), \plain\f4\fs20\cf1 Nothing\plain\f4\fs20\cf0 ), \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 )
+\par                             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 If
+\par \plain\f4\fs20\cf0                         \plain\f4\fs20\cf1 Catch\plain\f4\fs20\cf0  ext \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Exception
+\par                             display = Items(ea.Index).ToString()
+\par                         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Try
+\par \plain\f4\fs20\cf0                         \plain\f4\fs20\cf2 'get bounds for the 'cell' and draw text
+\par \plain\f4\fs20\cf0                         \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  rectf \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0  RectangleF((ea.Bounds.X + prevWidth) + iwidth, ea.Bounds.Y, useX, ea.Bounds.Height)
+\par                         ea.Graphics.DrawString(display, ea.Font, \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0  SolidBrush(ea.ForeColor), rectf)
+\par                         \plain\f4\fs20\cf1 If\plain\f4\fs20\cf0  cnt > 1 \plain\f4\fs20\cf1 Then
+\par \plain\f4\fs20\cf0                             \plain\f4\fs20\cf2 'draw the line for everyone but the first one
+\par \plain\f4\fs20\cf0                             \plain\f4\fs20\cf2 'other good colors for the line is silver and gray
+\par \plain\f4\fs20\cf0                             ea.Graphics.DrawLine(System.Drawing.Pens.LightGray, prevWidth + iwidth, ea.Bounds.Y, prevWidth + iwidth, useY)
+\par                         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 If
+\par \plain\f4\fs20\cf0                         \plain\f4\fs20\cf2 'remember previous column width
+\par \plain\f4\fs20\cf0                         prevWidth += col.Width
+\par                     \plain\f4\fs20\cf1 Next
+\par \plain\f4\fs20\cf0                 \plain\f4\fs20\cf1 Else
+\par \plain\f4\fs20\cf0                     \plain\f4\fs20\cf2 'hide columns deafault to normal
+\par \plain\f4\fs20\cf0                     \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  display \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String
+\par \plain\f4\fs20\cf0                     \plain\f4\fs20\cf2 'get the text from the bound object by property name in the columnmember
+\par \plain\f4\fs20\cf0                     \plain\f4\fs20\cf1 Try
+\par \plain\f4\fs20\cf0                         display = \plain\f4\fs20\cf1 CType\plain\f4\fs20\cf0 (Items(ea.Index).GetType.GetProperty(\plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .DisplayMember).GetValue(Items(ea.Index), \plain\f4\fs20\cf1 Nothing\plain\f4\fs20\cf0 ), \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 )
+\par                     \plain\f4\fs20\cf1 Catch\plain\f4\fs20\cf0  ext \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Exception
+\par                         display = Items(ea.Index).ToString()
+\par                     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Try
+\par \plain\f4\fs20\cf0                     ea.Graphics.DrawString(display, ea.Font, \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0  SolidBrush(ea.ForeColor), ea.Bounds.Left + iwidth, ea.Bounds.Top)
+\par                 \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 If
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Else
+\par \plain\f4\fs20\cf0                 \plain\f4\fs20\cf2 'draw default simplest form
+\par \plain\f4\fs20\cf0                 ea.Graphics.DrawString(\plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Text, ea.Font, \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0  SolidBrush(ea.ForeColor), Bounds.Left, Bounds.Top)
+\par             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 If
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Catch\plain\f4\fs20\cf0  ex \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Exception
+\par             \plain\f4\fs20\cf2 'draw default simplest form
+\par \plain\f4\fs20\cf0             ea.Graphics.DrawString(\plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Text, ea.Font, \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0  SolidBrush(ea.ForeColor), Bounds.Left, Bounds.Top)
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Try
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 MyBase\plain\f4\fs20\cf0 .OnDrawItem(ea)
+\par     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0 ()
+\par         \plain\f4\fs20\cf2 'set to ownerdraw
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .DrawMode = DrawMode.OwnerDrawFixed
+\par     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0 (\plain\f4\fs20\cf1 ByRef\plain\f4\fs20\cf0  cbo \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  ComboBox)
+\par         \plain\f4\fs20\cf2 'assign all properties from cbo to me
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'Dim pi As Reflection.PropertyInfo
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'For Each pi In cbo.GetType.GetProperties
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 '    Dim s As String = pi.Attributes.ToString
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 '    If pi.CanWrite Then
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 '        'On Error Resume Next 'just in case
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 '        Me.GetType.GetProperty(pi.Name).SetValue(Me, pi.GetValue(cbo, Nothing), Nothing)
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 '    End If
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'Next
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'TODO: have it consume ALL properties of original combo
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Anchor = cbo.Anchor
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .BackColor = cbo.BackColor
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .BackgroundImage = cbo.BackgroundImage
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .CausesValidation = cbo.CausesValidation
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .ContextMenu = cbo.ContextMenu
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .DataSource = cbo.DataSource
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .DisplayMember = cbo.DisplayMember
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Dock = cbo.Dock
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .DropDownStyle = cbo.DropDownStyle
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .DropDownWidth = cbo.DropDownWidth
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Enabled = cbo.Enabled
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Font = cbo.Font
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .ForeColor = cbo.ForeColor
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .IntegralHeight = cbo.IntegralHeight
+\par         \plain\f4\fs20\cf1 If\plain\f4\fs20\cf0  cbo.Items.Count > 0 \plain\f4\fs20\cf1 Then
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  tmp(cbo.Items.Count) \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Object
+\par \plain\f4\fs20\cf0             cbo.Items.CopyTo(tmp, 0)
+\par             \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Items.AddRange(tmp)
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 If
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .MaxDropDownItems = cbo.MaxDropDownItems
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .MaxLength = cbo.MaxLength
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Sorted = cbo.Sorted
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Text = cbo.Text
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .TabStop = cbo.TabStop
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .ValueMember = cbo.ValueMember
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Visible = cbo.Visible
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Location = cbo.Location
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Size = cbo.Size
+\par         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .TabIndex = cbo.TabIndex
+\par         \plain\f4\fs20\cf2 'set to ownerdraw
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .DrawMode = DrawMode.OwnerDrawFixed
+\par         \plain\f4\fs20\cf2 'switch combos
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  parent \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Object\plain\f4\fs20\cf0  = cbo.Parent
+\par         parent.Controls.Remove(cbo)
+\par         parent.Controls.Add(\plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 )
+\par     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2 'column class
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Class\plain\f4\fs20\cf0  Column
+\par 
+\par         \plain\f4\fs20\cf1 Private\plain\f4\fs20\cf0  _Width \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Private\plain\f4\fs20\cf0  _ColumnMember \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Private\plain\f4\fs20\cf0  _Header \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'width of the column
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'if it exceed the width of the dropdownwidth then it will not be shown
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property\plain\f4\fs20\cf0  Width() \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0                 \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _Width
+\par             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Set\plain\f4\fs20\cf0 (\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  Value \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer\plain\f4\fs20\cf0 )
+\par                 _Width = Value
+\par             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Set
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'bound field or property that you want to display in this column
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property\plain\f4\fs20\cf0  ColumnMember() \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0                 \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _ColumnMember
+\par             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Set\plain\f4\fs20\cf0 (\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  Value \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 )
+\par                 _ColumnMember = Value
+\par             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Set
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'not yet implemented
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property\plain\f4\fs20\cf0  Header() \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0                 \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _Header
+\par             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Set\plain\f4\fs20\cf0 (\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  Value \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 )
+\par                 _Header = Value
+\par             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Set
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0 ()
+\par             \plain\f4\fs20\cf1 MyBase\plain\f4\fs20\cf0 .new()
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0 (\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  width \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer\plain\f4\fs20\cf0 , \plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  columnmember \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 )
+\par             \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .New(width, columnmember, \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 .Empty)
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0 (\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  width \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer\plain\f4\fs20\cf0 , \plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  columnmember \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 , \plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  header \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 )
+\par             \plain\f4\fs20\cf1 MyBase\plain\f4\fs20\cf0 .new()
+\par             \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Width = width
+\par             \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .ColumnMember = columnmember
+\par             \plain\f4\fs20\cf1 Me\plain\f4\fs20\cf0 .Header = header
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Class
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf2 'the strong typed collection for the column objects
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Class\plain\f4\fs20\cf0  ColumnCollection
+\par         \plain\f4\fs20\cf1 Implements\plain\f4\fs20\cf0  IEnumerable
+\par 
+\par         \plain\f4\fs20\cf1 Private\plain\f4\fs20\cf0  _Col \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0  Collection()
+\par 
+\par         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 ReadOnly\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property\plain\f4\fs20\cf0  Count() \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0                 \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _Col.Count
+\par             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Default\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 ReadOnly\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property\plain\f4\fs20\cf0  Item(\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  Key \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 ) \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Column
+\par             \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0                 \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _Col(Key)
+\par             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Default\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 ReadOnly\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property\plain\f4\fs20\cf0  Item(\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  Index \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer\plain\f4\fs20\cf0 ) \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Column
+\par             \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0                 \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _Col(Index)
+\par             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Get
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Property
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Function\plain\f4\fs20\cf0  Add(\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  NewItem \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Column, \plain\f4\fs20\cf1 Optional\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  Key \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0  = \plain\f4\fs20\cf1 Nothing\plain\f4\fs20\cf0 ) \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Column
+\par             \plain\f4\fs20\cf1 If\plain\f4\fs20\cf0  Key \plain\f4\fs20\cf1 Is\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Nothing\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Then
+\par \plain\f4\fs20\cf0                 _Col.Add(NewItem)
+\par             \plain\f4\fs20\cf1 Else
+\par \plain\f4\fs20\cf0                 _Col.Add(NewItem, Key)
+\par             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 If
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Function
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f4\fs20\cf0  Remove(\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  Key \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 )
+\par             _Col.Remove(Key)
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f4\fs20\cf0  Remove(\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  Index \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer\plain\f4\fs20\cf0 )
+\par             _Col.Remove(Index)
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f4\fs20\cf0  Clear()
+\par             \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  cnt \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  cntMax \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Integer
+\par 
+\par \plain\f4\fs20\cf0             cntMax = _Col.Count
+\par             \plain\f4\fs20\cf1 For\plain\f4\fs20\cf0  cnt = cntMax \plain\f4\fs20\cf1 To\plain\f4\fs20\cf0  1 \plain\f4\fs20\cf1 Step\plain\f4\fs20\cf0  -1
+\par                 _Col.Remove(cnt)
+\par             \plain\f4\fs20\cf1 Next
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Function\plain\f4\fs20\cf0  Contains(\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  Key \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 String\plain\f4\fs20\cf0 ) \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Boolean
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Try
+\par \plain\f4\fs20\cf0                 \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  obj \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Object\plain\f4\fs20\cf0  = _Col(Key)
+\par                 \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 True
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 Catch\plain\f4\fs20\cf0  ex \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  Exception
+\par                 \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 False
+\par \plain\f4\fs20\cf0             \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Try
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Function
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0 ()
+\par             \plain\f4\fs20\cf1 MyBase\plain\f4\fs20\cf0 .new()
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub
+\par 
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf1 Public\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Function\plain\f4\fs20\cf0  GetEnumerator() \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  System.Collections.IEnumerator \plain\f4\fs20\cf1 Implements\plain\f4\fs20\cf0  System.Collections.IEnumerable.GetEnumerator
+\par             \plain\f4\fs20\cf1 Return\plain\f4\fs20\cf0  _Col.GetEnumerator
+\par         \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Function
+\par 
+\par \plain\f4\fs20\cf0     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Class
+\par 
+\par End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Class\plain\f5\fs20\cf0 
+\par \pard\plain\f2\fs20\cf0 
+\par \plain\f7\fs20\cf0\ul Here is an example of how to use it.\plain\f4\fs20\cf0 
+\par 
+\par     \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  icbo \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  MultiComboBox
+\par 
+\par     \plain\f4\fs20\cf1 Private\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f4\fs20\cf0  Form1_Load(\plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  sender \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  System.Object, \plain\f4\fs20\cf1 ByVal\plain\f4\fs20\cf0  e \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  System.EventArgs) \plain\f4\fs20\cf1 Handles\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 MyBase\plain\f4\fs20\cf0 .Load
+\par 
+\par         \plain\f4\fs20\cf1 Dim\plain\f4\fs20\cf0  ds \plain\f4\fs20\cf1 As\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0  DataSet()
+\par         \plain\f4\fs20\cf2 'load data
+\par \plain\f4\fs20\cf0         ds.ReadXml("sample.xml")
+\par 
+\par         \plain\f4\fs20\cf2 'replace normal combo with mc combo
+\par \plain\f4\fs20\cf0         icbo = \plain\f4\fs20\cf1 New\plain\f4\fs20\cf0  MultiComboBox(ComboBox1)
+\par 
+\par         \plain\f4\fs20\cf2 'both the displaymember and imageindexmemeber can be used without
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'the datasource being set to see what i mean uncomment the addrange
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'line below and comment the datasource and valuemember lines
+\par \plain\f4\fs20\cf0         icbo.ImageList = ImageList1
+\par         icbo.DataSource =ds.Tables(0)\plain\f4\fs20\cf2 
+\par \plain\f4\fs20\cf0         icbo.DisplayMember = "firstName"
+\par         \plain\f4\fs20\cf2 'icbo.ImageIndexMember = "Index" 'use any integer member that corresponds to the imagelist images
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'make some columns
+\par \plain\f4\fs20\cf0         icbo.Columns.Add(\plain\f4\fs20\cf1 New\plain\f4\fs20\cf0  MultiComboBox.Column(50, "firstName"))
+\par         icbo.Columns.Add(\plain\f4\fs20\cf1 New\plain\f4\fs20\cf0  MultiComboBox.Column(50, "lastName"))
+\par         \plain\f4\fs20\cf2 'showcolumns
+\par \plain\f4\fs20\cf0         icbo.ShowColumns = \plain\f4\fs20\cf1 True
+\par \plain\f4\fs20\cf0         \plain\f4\fs20\cf2 'there is a showcolumnheaders property but its not implemented yet
+\par \plain\f4\fs20\cf0 
+\par     \plain\f4\fs20\cf1 End\plain\f4\fs20\cf0  \plain\f4\fs20\cf1 Sub\plain\f3\fs17\cf0 
+\par \plain\f9\fs17\cf0 
+\par \pard\qr\plain\f6\fs20\cf0\i submitted by Ed Marquez
+\par }
+ 
